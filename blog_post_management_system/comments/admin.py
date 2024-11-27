@@ -5,7 +5,7 @@ from .domain.models import UserComments
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['post_id','user_id','content','date_posted']
     list_filter = ['post_id','user_id','content','date_posted']
-    search_fields = ['user_id','content','date_posted']
+    search_fields = ['user_id','date_posted']
 
 admin.site.register(UserComments,CommentAdmin)
 
