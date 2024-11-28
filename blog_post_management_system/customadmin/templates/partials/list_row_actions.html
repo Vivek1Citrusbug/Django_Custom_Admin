@@ -1,0 +1,31 @@
+{% load misc_filters %}
+
+{% if opts.db_table != 'contact_us' %}
+    {% if has_change_permission %}
+       <a href="{% url opts|admin_urlname:'update' o.pk|admin_urlquote %}" title="Edit" class="btn btn-primary btn-xs"><i
+                class="fas fa-pencil-alt"></i></a>
+    {% endif %}
+{% endif %}
+
+{% if opts.db_table != 'contact_us' %}
+    {% if has_view_permission %}
+    <a href="{% url opts|admin_urlname:'detailview' o.pk|admin_urlquote %}" title="Detail" class="btn btn-primary btn-xs"><i
+        class="fa fa-eye"></i></a>
+    {% endif %}
+{% endif %}
+
+
+{% if has_gallery_permission %}
+    <a data-title="{{ o }}" title="Delete" href="{% url opts|admin_urlname:'gallery' %}"
+       class="btn btn-success btn-xs btn-delete"><i class="fas fa-picture-o"></i></a>
+{% endif %}
+
+{% if has_watch_reports_permissions %}
+<a href="{% url 'user:user-list' o.pk|admin_urlquote %}" title="Detail" class="btn btn-primary btn-xs"><i
+    class="fas fa-book"></i></a>
+{% endif %}
+
+{% if has_comments_watch_permission %}
+<a href="{% url 'foodfeed:foodfeedcomment-list' o.pk|admin_urlquote %}" title="Comments-Detail" class="btn btn-primary btn-xs"><i
+    class="fas fa-book"></i></a>
+{% endif %}

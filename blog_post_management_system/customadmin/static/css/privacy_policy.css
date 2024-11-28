@@ -1,0 +1,73 @@
+body,
+* {
+  font-family: "Manrope", sans-serif !important;
+}
+body {
+  margin: 0;
+}
+.page-header {
+  padding: 30px 15px;
+}
+.logo {
+  text-align: center;
+}
+.logo img {
+  height: 75px;
+  width: auto;
+}
+.page-body {
+  padding: 15px;
+}
+h1.main-title {
+  font-size: 36px;
+  margin: 10px 0 30px;
+}
+ul li,
+ol li {
+  margin-bottom: 7px;
+}
+.page-content {
+  width: 100%;
+  margin: 0 auto;
+}
+@media (min-width: 1024px) {
+  .page-content {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}
+@media (min-width: 1200px) {
+  .page-content {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+}
+@media (min-width: 1400px) {
+  .page-content {
+    width: 100%;
+    max-width: 80%;
+    margin: 0 auto;
+  }
+}
+@media (max-width: 1024px) {
+  .logo img {
+    height: 65px;
+    width: auto;
+  }
+  h1.main-title {
+    font-size: 30px;
+    margin: 0px 0 26px;
+  }
+}
+@media (max-width: 767px) {
+  .logo img {
+    height: 55px;
+    width: auto;
+  }
+  h1.main-title {
+    font-size: 28px;
+    margin: 0px 0 26px;
+  }
+}

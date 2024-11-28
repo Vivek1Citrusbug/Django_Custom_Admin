@@ -1,0 +1,63 @@
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+  integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+
+<script>
+  function convertSerializedToJson(serializedData) {
+    var result = {};
+    var valid = true;
+    serializedData.split("&").forEach(function (keyValue) {
+      var pair = keyValue.split("=");
+      if (pair[0] === "file" && pair[1] == 0) {
+        valid = false;
+        $("#image-error").html(`{{files}} is required`);
+      }else{
+        $("#image-error").html(``);
+      }
+      if (pair[1] === "") {
+        valid = false;
+        $("#id_" + pair[0])
+          .siblings(".text-danger")
+          .html(
+            `${pair[0]
+              .replaceAll("_", " ")
+              .replace(/^./, pair[0][0].toUpperCase())
+              .replaceAll("pg", " ")
+              .replace(
+                /-\b[A-Za-z]{3}[A-Za-z]+\d{1,2}\d{4}\b/g,
+                ""
+              )} is required`
+          );
+      } else {
+        $("#id_" + pair[0])
+          .siblings(".text-danger")
+          .html("");
+      }
+      result[pair[0]] = decodeURIComponent(pair[1]);
+    });
+    return { result, valid };
+  }
+  $("#button_submit").click(() => {
+    const { result, valid } = convertSerializedToJson(
+      {% if files %}
+        $("#{{form_name}}").serialize() + `&file=${$("#{{files}}").get(0).files.length}`
+      {% else %}
+      $("#{{form_name}}").serialize()
+      {% endif %}
+    );
+    if (valid) {
+      if (new Date(result.starts_at) > new Date(result.ends_at)) {
+        $("#id_ends_at")
+          .siblings(".text-danger")
+          .html(`end date should be greater that start date`);
+        return;
+      } else {
+        // WIP
+        $("#{{form_name}}").submit();
+      }
+    }
+  });
+</script>

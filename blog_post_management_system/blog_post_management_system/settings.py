@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 ]
 
 EXTERNAL_APPS = [
-    'accounts','blogs','comments','likes',
+    'accounts','blogs','comments','likes','customadmin',
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS

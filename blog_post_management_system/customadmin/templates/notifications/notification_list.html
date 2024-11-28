@@ -1,0 +1,297 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load misc_filters %}
+{% block title %}
+{{ opts.verbose_name_plural|capfirst }} | Just Move
+{% endblock %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-dropdown {
+        z-index: 9999;
+    }
+
+    .select2-container {
+        box-sizing: border-box;
+        display: inline-block;
+        margin: 0;
+        position: relative;
+        vertical-align: middle;
+        width: 100% !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{%include 'includes/sidebar_header.html' %}
+<div class="text-center">{% include 'includes/messages.html' %}</div>
+<div class="rw_inner_area rw_modal_backdrop">
+    {% csrf_token %}
+    <div class="rw_dashboard_box_wrapper">
+        <div class="admin_header agency_header">
+            <div class="dashboard_title">
+                <h1 class="mb-0">{{opts.verbose_name_plural}}</h1>
+            </div>
+        </div>
+        <div class="admin_user_select">
+
+            <div class="search_icon_wrapper">
+                <div class="rw_dashboard_btn">
+                    <button onclick="openNewNotificationModal()" class="rw_btn">+new {{opts.verbose_name}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rw_table_wrapper mt-5">
+        <div class="rw_table_inner rw_admin_user_table rw_campaigns_table">
+            <table id="{{opts.model_name}}-table" class="table rw_pagination mt-5">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Read</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade rw_modal delete_popup" id="new_notification_modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal_title">
+                        <h4>Send Notifications</h4>
+                    </div>
+
+                    <a href="javascript:;" class="popup_close" data-bs-dismiss="modal" aria-label="Close"><img
+                            src="{% static 'images/icons/close.svg' %}" alt="close"></a>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="rw_form_inputs">
+                            <label class="rw_form_label">Company</label>
+                            <div class="rw_input health-manager-select">
+                                <select class="custom-select mb-3 form-select" onchange="onChangeCompany(this)"
+                                    id="company-select">
+                                    <option value="all">All</option>
+                                    {% for company in companies %}
+
+                                    <option value="{{company.0}}">
+                                        {{company.1}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="rw_form_inputs d-none" id="department-select">
+                            <label class="rw_form_label">Departments</label>
+                            <div class="rw_input health-manager-select">
+                                <select class="custom-select mb-3 form-select" multiple></select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 col-md-12">
+                            <div class="rw_form_inputs">
+                                <label class="rw_form_label">Title*</label>
+                                <div class="rw_input">
+                                    <input type="text" name="" id="id_title">
+                                    <span class="text-danger"> </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <div class="rw_form_inputs">
+                                <label class="rw_form_label">Message*</label>
+                                <div class="rw_input">
+                                    <textarea class="form-control" name="" id="id_message" rows="3"></textarea>
+                                    <span class="text-danger"> </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 col-md-12">
+                            <div class="rw_form_inputs">
+                                <label class="rw_form_label">Image ( Image should be less than 300 KB )</label>
+                                <div class="rw_input">
+                                    <input type="file" onchange="extensionCheck(this)" name="notification_image"
+                                        id="notification_image" accept=".jpg, .jpeg, .png">
+                                    <span class="text-danger"> </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% if notification_schedule_feature %}
+                        <div class="col-lg-12 col-md-12">
+                            <div class="rw_form_inputs">
+                                <label class="rw_form_label">Schedule at*</label>
+                                <div class="rw_input">
+                                    <input type="datetime-local" name="schedule_at" id="schedule_at">
+                                    <span class="text-danger"> </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <ul class="modal_btns">
+                        <li><button class="modal_btn cancel" data-bs-dismiss="modal">Cancel</button></li>
+                        <li>
+                            <div type="button" id="delete_agency" onclick="sendNotification()" class="modal_btn">Send
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="company-list" class="d-none">
+        {% for company in companies %}
+        <div class="loop-div">
+            {{company.0}}/{{company.2}}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>/
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+<script src="{% static 'js/notification_datatable.js' %}">   </script>
+
+<!-- Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script>
+    $("#department-select select").select2({
+        placeholder: "Select Departments",
+        allowClear: true
+    });
+</script>
+
+<script>
+
+    var datatable_url = "{% url 'notifications:notification-list-ajax' %}";
+
+    const openNewNotificationModal = () => {
+        const department = $("#department-select select").val()
+        const company = $("#company-select").val()
+        const title = $("#id_title").val("")
+        const message = $("#id_message").val("")
+        $("#new_notification_modal").modal("show");
+    };
+
+    let department_json = {}
+
+    $("#company-list .loop-div").map(item => {
+        const htmlContent = $("#company-list .loop-div")[item].innerHTML
+        const items = htmlContent.replaceAll("'", '"').split("/")
+        const department = JSON.parse(items[1])
+        department_json[items[0].trim()] = department
+
+    })
+
+    const onChangeCompany = (el) => {
+        let select = $("#department-select select")
+        select.html("")
+        if (el.value !== "all") {
+            $("#department-select").removeClass("d-none")
+            const departments = department_json[el.value]
+
+            departments.map(dep => {
+                select.append(`<option value="${dep}">${dep}</option>`)
+            })
+        } else {
+            $("#department-select").addClass("d-none")
+        }
+    }
+
+    function extensionCheck(el) {
+        const value = el.files[0]
+
+        if (value) {
+            const ext = value.name.split('.').pop();
+            if (ext !== 'png' && ext !== 'jpg' && ext !== 'jpeg') {
+                el.value = null
+                $(el).siblings(".text-danger").html("Only png, jpg and jpeg files are allowed")
+                el.files = []
+            } else if (value.size / 1024 > 300) {
+                el.value = null
+                $(el).siblings(".text-danger").html("File size should be less than 300KB")
+                el.files = []
+            }
+            else {
+                $(el).siblings(".text-danger").html("")
+            }
+        }
+    }
+    const sendNotification = () => {
+        let csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        let is_valid = true
+        let payload = new FormData()
+        const department = $("#department-select select").val()
+        const company = $("#company-select").val()
+        const title = $("#id_title").val()
+        const message = $("#id_message").val()
+        const schedule_at = $("#schedule_at").val() || undefined
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || undefined;
+
+        if (title == "") {
+            is_valid = false
+            $("#id_title").siblings(".text-danger").html("Title is required")
+        } else {
+            $("#id_title").siblings(".text-danger").html("")
+        }
+
+        if (message == "") {
+            is_valid = false
+            $("#id_message").siblings(".text-danger").html("Message is required")
+        } else {
+            $("#id_message").siblings(".text-danger").html("")
+        }
+        if (department.length > 0) {
+            payload.append("department", department)
+        }
+        payload.append("company", company,)
+        payload.append("title", title,)
+        payload.append("message", message,)
+        payload.append("schedule_at", new Date(schedule_at).getTime() / 1000)
+        payload.append("timeZone", timeZone)
+
+        payload.append("image", $("#notification_image").get(0).files[0])
+
+        if (is_valid) {
+            $.ajax({
+                type: "post",
+                url: "/admin/send-notification/",
+                headers: {
+                    "X-CSRFToken": csrftoken,
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: payload, beforeSend: () => {
+
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $("#new_notification_modal").modal("hide")
+                        location.href = response.redirect_url
+                    }
+                }
+            })
+        }
+
+    }
+
+</script>
+</body>
+{% endblock %}

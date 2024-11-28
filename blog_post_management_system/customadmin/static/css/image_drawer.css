@@ -1,0 +1,176 @@
+//https://robots.thoughtbot.com/sasss-content-directive
+@mixin mobile-header() {
+  @media (max-width: 420px) {
+    font-size: 3.8vw;
+
+    @content;
+  }
+}
+
+#tools,
+#image {
+  outline: 1px solid silver;
+}
+
+#tools {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  //padding-top: .5em;
+  //padding-left: .5em;
+
+  background: #ccc;
+
+  $size: 2.7em;
+  $group-spacing: 0.5em;
+
+  @include mobile-header() {
+    .picker_wrapper {
+      font-size: 3vw;
+    }
+  }
+
+  .tool-button {
+    display: inline-block;
+    position: relative;
+    width: $size;
+    height: $size;
+    padding: 0;
+
+    box-sizing: border-box;
+    border: none;
+    border-left: 1px solid silver;
+    //outline: none;
+
+    text-indent: $size * 2;
+    color: #333;
+    background-color: whitesmoke;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+
+    //box-shadow: inset 0 0 10px 5px rgba(gray, .2);
+
+    transition: opacity 0.2s;
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor: pointer;
+
+    &:hover/*, &.active*/ {
+      background-color: paleturquoise;
+      //color: white;
+    }
+  }
+
+  #image-drawer {
+    line-height: $size;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='none' stroke='black' stroke-width='4'%3E %3Crect x='9' y='9' width='82' height='72' stroke-width='2'/%3E %3Cpath d='M10,75 l30,-30 l30,30 m-10,-10 l30,-30 M25,60 a27,27 0 1,1 50,-10'/%3E %3C/svg%3E");
+  }
+
+  #rotater {
+    margin-right: $group-spacing;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='none' stroke='black' stroke-width='12'%3E %3Cpath d='M20,70 v-60' stroke-dasharray='12'/%3E %3Cpath d='M30,80 h60'/%3E %3Cpath d='M35,20 a40,40 0 0,1 40,40 m-20,-13 20,13 13,-20'/%3E %3C/svg%3E");
+  }
+
+  #eraser {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='none' stroke='black' stroke-width='12'%3E %3Cpath d='M15,17 c90,-20 0,100, 70,60'/%3E%3C/svg%3E");
+    &.active {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='none' stroke='black' stroke-width='12'%3E %3Cpath d='M15,17 c90,-20 0,100, 70,60' stroke-dasharray='50 40 999' /%3E %3Cpath d='M37,30 l40,40 m0,-40 -40,40' /%3E %3C/svg%3E");
+    }
+  }
+
+  #stroke-color {
+    display: inline-block;
+    width: $size;
+    height: $size;
+
+    //.picker_sample overrides:
+    min-height: 0;
+    order: 0;
+  }
+
+  #stroke-width {
+    $pad: 0.2em;
+
+    width: 3.5em;
+    padding: $pad;
+    margin-right: $group-spacing;
+
+    span {
+      display: block;
+      //font-size: .5em;
+
+      color: transparent; //Hide the text
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='70'%3E%3Cpath fill='black' d='M10,30  c120,-50 240,50, 360,-30  v50  c-120,60 -240,-50, -360,-20'/%3E%3C/svg%3E")
+        top center / contain no-repeat;
+    }
+    input {
+      position: absolute;
+      bottom: $pad;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+    }
+  }
+
+  #undoer {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='none' stroke='black' stroke-width='12'%3E %3Cpath d='M20,13 v30 h30 m-30,0  a35,35 0 1,1 50,44'/%3E %3C/svg%3E");
+  }
+
+  #clearer {
+    margin-right: $group-spacing;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='none' stroke='black' stroke-width='12'%3E %3Cpath d='M20,20 l60,60  M20,80 l60,-60'/%3E %3C/svg%3E");
+  }
+
+  #downloader {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='none' stroke='black' stroke-width='12'%3E %3Cpath d='M50,15 v45 m-25,-25 l25,25 25,-25 M10,80 h80'/%3E %3C/svg%3E");
+  }
+}
+
+#image {
+  flex: 1 1 auto;
+  position: relative;
+  min-height: 50vh;
+
+  svg {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: white;
+  }
+}
+
+pre {
+  flex: 0 0 auto;
+  height: 20em;
+  overflow: auto;
+
+  background: white;
+  color: #888;
+  border: 1px solid gainsboro;
+}
+
+/* Color picker overrides */
+
+#tools .popup.popup_bottom {
+  & {
+    left: -12em;
+  }
+  .picker_arrow {
+    left: 11.5em;
+    transform: none;
+
+    &::before {
+      transform-origin: 100% 0;
+      transform: rotate(45deg);
+    }
+    &::after {
+      left: -70%;
+      width: 200%;
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{% extends 'base/base.html' %} {% load static %} {%load misc_filters %}
+{%block title %} Dashboard | Just Move {% endblock %} {% block head %}
+
+<style>
+    #user-chart,
+    #company-chart {
+        max-height: 300px;
+        max-width: 100%;
+        bottom: 0;
+    }
+</style>
+
+{% endblock %} {% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<body>
+    <div class="admin_dashboard_page">
+        {% include 'includes/sidebar_header.html' %}
+        <div class="rw_inner_area">
+            <div class="rw_dashboard_box_wrapper">
+                <div class="admin_header">
+                    <div class="dashboard_title">
+                        <h1>Dashboard</h1>
+                        <p>This is the overview of the total company and total users count with active and inactive status</p>
+                    </div>
+                </div>
+            </div>
+            <p class="page-description mb-2"></p>
+            <div class="wrapper wrapper-content mt-5">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <div class="ibox-tools d-flex justify-content-center">
+                                    <div class="col-lg-6 col-md-12 justify-content-center">
+                                        <canvas class="chart" id="user-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ibox-content text-center">
+                                <h5 class="mt-5">Total Users</h5>
+                                <h3 class="no-margins">{{ total_users }}</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <div class="ibox-tools d-flex justify-content-center">
+                                    <div class="col-lg-6 col-md-12">
+                                        <canvas class="chart" id="company-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ibox-content text-center">
+                                <h5 class="mt-5">Total Companies</h5>
+                                <h3 class="no-margins">{{ total_active_companies }}</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+<script src="{% static 'js/ajax_datatable.js' %}"></script>
+<script>
+
+    var ctx = document.getElementById('user-chart').getContext('2d');
+    var ctx2 = document.getElementById('company-chart').getContext('2d');
+
+    // Define your data
+    var data = {
+        labels: ["Active", "Inactive"],
+        datasets: [
+            {
+                data: [{{ user_count }}, {{ inactive_users }}],
+        backgroundColor: ['#ED7844', "#3B4860"]
+          },
+      ]
+  };
+    var data2 = {
+        labels: ["Active", "Inactive"],
+        datasets: [
+            {
+                data: [{{ total_active_companies }}, {{ deleted_companies }}],
+        backgroundColor: ['#ED7844', "#3B4860"]
+          },
+      ]
+  };
+
+    // Chart configuration
+    var chartOptions = {
+        scales: {
+        }
+    };
+
+    // Create the chart
+    var myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: data,
+        options: chartOptions
+    });
+    var myChart = new Chart(ctx2, {
+        type: 'doughnut',
+        data: data2,
+        options: chartOptions
+    });
+</script>
+<!-- <script src="{% static 'js/custom.js' %}"></script> -->
+{% endblock %}
