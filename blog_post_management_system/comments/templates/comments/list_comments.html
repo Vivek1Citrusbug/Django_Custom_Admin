@@ -35,7 +35,7 @@ Comment list
                         <small class="text-muted">Posted on {{ comment.date_posted }}</small>
                     </p>
                     
-                    {% if comment.user_id == request.user or request.user == UserComments.post_id.author  or request.user.is_staff%}
+                    {% if comment.user_id == request.user or self.request.user == UserComments.post_id.author  or request.user.is_staff%}
                         <form action="{% url 'delete_comment' comment.id %}" method="post" class="d-inline">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
