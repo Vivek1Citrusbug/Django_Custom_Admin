@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %} 
+{% load static %} 
+{% comment %} {% load widget_tweaks %}  {% endcomment %}
+{%block title %} 
+{{ opts.verbose_name_plural|capfirst }} | Just Move 
+{% endblock%} 
+{% block content %}
+
+<!-- {{form.as_p}} -->
+{% include 'includes/sidebar_header.html' %}
+
+<div class="container">
+  
+  <div class="mt-5">
+    <a class="link-danger back-link" href="{% url 'user:user-list' %}">
+      <i class="fa fa-arrow-left">&nbsp; Back</i>
+    </a>
+  </div>
+
+  <div class="rw_inner_form_inner_area container">
+    
+    <div class="rw_inn_form_box">
+      <form action="" method="post" novalidate>
+        {% csrf_token %}
+        <div class="col-lg-12 col-md-6">
+          <div class="rw_form_inputs d-flex justify-content-center">
+            <img
+              onclick="$('#id_image').click()"
+              class="w-25"
+              style="border-radius: 50%; cursor: pointer"
+              src="{% if form.image.value %}{{form.image.value.url}} {% else %} {% static '/images/uplaod-image.jpg' %} {% endif %}"
+              alt=""
+            />
+          </div>
+        </div>
+        <div class="row">
+          {% for f in form %} {% if not f.name == "image" %}
+          <div class="col-lg-6 col-md-6">
+            <div class="rw_form_inputs">
+              <label class="rw_form_label">{{f.label}}</label>
+              <div class="rw_input">
+                {{f}}
+                <span class="text-danger">{{f.errors}} </span>
+                <span class="input_icon business"></span>
+              </div>
+            </div>
+          </div>
+          {% endif %} {% endfor %}
+        </div>
+        <div class="rw_save_btn">
+          <button type="button " class="rw_btn">save</button>
+        </div>
+      </form>
+
+      {% endblock %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,243 @@
+.wrapper {
+  width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.wrapper .card {
+  background: transparent !important;
+  width: calc(25% - 8px);
+  border-radius: 0;
+  border: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  box-shadow: unset;
+  margin: 5px 10px;
+}
+.wrapper .card .circle {
+  position: relative;
+  height: 120px;
+  width: 120px;
+  border-radius: 50%;
+  cursor: default;
+  margin-bottom: 10px;
+}
+.card .circle .box,
+.card .circle .box span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.card .circle .box {
+  height: 100%;
+  width: 100%;
+  background: #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  transition: all 0.2s;
+}
+
+.card .circle .box span,
+.wrapper .card .text {
+  background: rgb(6, 6, 6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.circle .box span {
+  font-size: 38px;
+  font-family: sans-serif;
+  font-weight: 600;
+  transform: translate(-45%, -45%);
+  transition: all 0.1s;
+}
+
+.card .text {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+.active-user-title span {
+  color: #0f0;
+  font-size: 22px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.active-user-title h6 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  color: #000;
+}
+.active-user-title h1 {
+  display: flex;
+  align-items: center;
+  gap: 0 20px;
+  margin: auto;
+  text-align: center;
+  justify-content: center;
+  font-size: 52px;
+  line-height: 50px;
+  color: #000;
+  font-weight: 600;
+}
+.update-company-btn , .view-dashboard-btn {
+  background: #ee6262;
+  border: 1px solid transparent;
+  padding: 0 20px;
+}
+.update-company-btn:hover , .view-dashboard-btn:hover {
+  background: transparent;
+  border: 1px solid #ee6262;
+  padding: 0 20px;
+  color: #000 !important;
+}
+.health-manager-select .custom-select.form-select {
+  width: 100%;
+  height: 56px;
+  border: 1px solid #ebecf4;
+  font-size: 16px;
+  color: #11263c;
+  outline: none;
+}
+.health-manager-select .custom-select.form-select:focus {
+  box-shadow: unset;
+}
+.progress-bar-chart-wrapper {
+  margin-top: auto;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px 0;
+  gap: 40px;
+  margin-left: auto;
+  width: 600px;
+  max-width: 85%;
+}
+.block-wrapper-div {
+  display: flex;
+  /* align-items: center; */
+  justify-content: space-between;
+  margin: 24px 0 40px;
+  /* flex-wrap: wrap; */
+  gap: 20px;
+}
+.dashboard-count-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0 10px;
+}
+
+.dashboard-count-info span {
+  font-size: 14px;
+  color: #ee6262;
+  font-weight: 500;
+  line-height: 16px;
+}
+.dashboard-info-block-content {
+  margin-bottom: 0;
+  width: 100%;
+}
+.dashboard-info-box-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100%;
+  padding: 14px 8px;
+  margin-top: 0;
+  cursor: pointer;
+  background: #edeff0;
+  border-radius: 14px;
+  border: none;
+  justify-content: flex-start;
+  font-size: 14px;
+}
+.dashboard-count-info span.green-text {
+  color: #0f0;
+}
+.bg-block {
+  background: #f1840e87;
+  border: 0;
+  border-radius: 14px;
+}
+.dashboard-info-block-text h4 {
+  font-size: 16px;
+  line-height: 22px;
+  color: #000;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.dashboard-info-block-text p {
+  font-size: 14px;
+  line-height: 16px;
+  margin: 0;
+  color: #000;
+  font-weight: 400;
+}
+
+
+.table.department-table thead {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #30375a;
+  z-index: 1;
+  border-bottom: 1px solid #000;
+  color: #fff;
+}
+
+div#department-progress-table {
+  overflow-y: auto;
+  max-height: 450px;
+  min-height: 450px;
+  height: 450px;
+  margin: 0;
+}
+
+.table.department-table thead tr {
+  border-bottom: 1px solid #000;
+}
+
+
+@media (max-width: 1600px) {
+  .dashboard-info-box-wrapper {
+    gap: 10px;
+    padding: 10px 8px;
+    justify-content: center;
+    font-size: 14px;
+    flex-direction: column;
+    text-align: center;
+  }
+  .dashboard-info-block-text h4 {
+    font-size: 15px;
+    line-height: 20px;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 753px) {
+  .wrapper {
+    max-width: 700px;
+  }
+  .wrapper .card {
+    /* width: calc(50% - 20px); */
+    margin-bottom: 20px;
+    height: 250px;
+  }
+}
+@media (max-width: 505px) {
+  .wrapper {
+    max-width: 500px;
+  }
+  .wrapper .card {
+    width: 100%;
+  }
+}

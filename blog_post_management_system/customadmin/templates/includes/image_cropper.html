@@ -1,0 +1,79 @@
+{% load static %}
+
+<div class="rw_form_inputs" id="trigger-image">
+  <label class="rw_form_label">{{image.label}}&nbsp; (only jpeg, png, jpg allowed) *</label>
+
+  <div class="rw_input img-preview-div">
+    <input
+      class="file-input"
+      type="file"
+      hidden
+      name="image"
+      accept=".png, .jpg, .jpeg"
+      id="file-input"
+      {% if multiple %} multiple {% endif %}
+    />
+    <img
+      id="image-div-input-preview"
+      src={% if image.value %} {{image.value.url}} {% elif image.image %} {{image.image.url}} {% else %}"{% static '/images/uplaod-image.jpg' %}" {% endif %}
+      alt=""
+    />
+  </div>
+  <span id="image-error" class="text-danger"> {{image.errors}} </span>
+</div>
+
+<div class="image-cropper-popup">
+  <div class="custom-model-inner input-modal-inner">
+    <div class="close-btn">×</div>
+    <div class="custom-model-wrap pt-4">
+      <div class="pop-up-content-wrap">
+        <main class="page">
+          <!-- input file -->
+          <div class="box"></div>
+          <!-- leftbox -->
+          <div class="box-2 m-auto">
+            <div class="result"></div>
+          </div>
+          <!--rightbox-->
+          <div class="box-2 img-result hide mt-3">
+            {% if preview is not None %}
+            <img
+              class="cropped"
+              style="height: 50%; width: 50%"
+              id="image-div-input-preview"
+              src=""
+              alt=""
+            />
+            <!-- result of crop -->
+            {% endif %}
+          </div>
+          <!-- input file -->
+          <div class="box mt-3">
+            <div class="options hide"></div>
+            <div class="bottom-btn-row">
+              <!-- save btn -->
+              {% if preview is not None %}
+              <button class="rw_btn preview">Preview</button>
+              {% endif %}
+              <button type="button" class="rw_btn save">Save</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+</div>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+  integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script>
+  document.getElementById("file-input").addEventListener("change", (e) => {
+    $(".image-cropper-popup").addClass("model-open");
+  });
+  $(".close-btn").click(function () {
+    $(".image-cropper-popup").removeClass("model-open");
+  });
+</script>

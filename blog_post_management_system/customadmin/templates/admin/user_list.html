@@ -1,0 +1,102 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load misc_filters %}
+{% block title %}
+    {{ opts.verbose_name_plural|capfirst }}  | Just Move
+{% endblock %}
+{% block content %}
+{%include 'includes/sidebar_header.html' %}
+
+
+
+<div class="text-center">
+    {% include 'includes/messages.html' %}
+</div>
+
+<div class="rw_inner_area rw_modal_backdrop">
+        <div class="rw_dashboard_box_wrapper">
+            <div class="admin_header agency_header mb-0">
+                <div class="dashboard_title">
+                    <h5>Total Users :&nbsp{{count}}</h5>
+                </div>
+            </div>
+            <div class="admin_user_select"> 
+                <div class="search_icon_wrapper">
+                     <div class="rw_dashboard_btn">
+                        <a href="{% url 'user:user-create' %}" class="rw_btn">Add user</a>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rw_table_wrapper mt-5">
+            <div class="rw_table_inner rw_admin_user_table rw_campaigns_table">                
+                <table id="{{opts.model_name}}-table" class="table rw_pagination mt-5" >
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Username</th>
+                            <th>First_name</th>
+                            <th>Last_name</th>
+                            <th>Email</th>
+                            <th>date_joined</th>
+                            <th>is_active</th> 
+                            <th>is_staff</th>
+                            <th>last_login</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>                    
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+        <div class="modal fade rw_modal delete_popup" id="delete_confirm_popup" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal_title">
+                            <h4>Delete {{opts.verbose_name}}</h4>
+                        </div>
+
+                        <a href="javascript:;" class="popup_close" data-bs-dismiss="modal"
+                            aria-label="Close"><img src="{% static 'images/icons/close.svg' %}"
+                                alt="close"></a>
+                    </div>
+                    <div class="modal-body">
+                        <div class="delete_modal_body">
+                            <img src="{% static 'images/delete_popup.svg' %}" alt="">
+                            <h1>Delete {{opts.verbose_name}} </h1>
+                            <p>Are you sure you want to delete ? </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <ul class="modal_btns">
+                            <li><a href="javascript:;" class="modal_btn cancel"
+                                    data-bs-dismiss="modal">no</a></li>
+                            <li><a href="" id="delete_agency" class="modal_btn">Yes</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>/
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'js/user_datatable.js' %}" >   </script>
+
+    <script>
+        
+        var datatable_url = "{% url 'user:user-list-ajax' %}";
+        function confirmDelete(id){
+            $('#delete_agency').attr("href", "/admin/user-delete/"+id)
+        $('#delete_confirm_popup').modal('show'); 
+        }
+    </script>
+</body>
+{% endblock %}

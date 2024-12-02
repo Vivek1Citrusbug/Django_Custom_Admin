@@ -1,0 +1,105 @@
+{% extends 'base/base.html' %} 
+{% load static %} 
+{% comment %} {% load widget_tweaks %} {% endcomment %}
+{%block title %} 
+{{ opts.verbose_name_plural|capfirst }} | Just Move 
+{% endblock %}
+{%block content %} 
+{% include 'includes/sidebar_header.html' %}
+{%block head%}
+<link rel="stylesheet" href="{% static '/css/create_company.css' %}" />
+{%endblock%}
+
+<div class="rw_inner_form_inner_area">
+
+  <div class="container">
+    <div class="">
+      <a class="link-danger back-link" href="{% url 'user:user-list' %}">
+        <i class="fa fa-arrow-left">&nbsp; Back</i>
+      </a>
+    </div>
+
+    <div class="rw_inn_form_box">
+      <form action="" method="post" id="user_form" novalidate>
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <div class="rw_form_inputs">
+              <label class="rw_form_label">{{form.email.label}}*</label>
+              <div class="rw_input">
+                {{form.email}}
+                <span class="text-danger"> {{form.email.errors}} </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <div class="rw_form_inputs">
+              <label class="rw_form_label">{{form.username.label}}*</label>
+              <div class="rw_input">
+                {{form.username}}
+                <span class="text-danger"> {{form.username.errors}} </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <div class="rw_form_inputs">
+              <label class="rw_form_label">{{form.first_name.label}}*</label>
+              <div class="rw_input">
+                {{form.first_name}}
+                <span class="text-danger"> {{form.first_name.errors}} </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <div class="rw_form_inputs">
+              <label class="rw_form_label">{{form.last_name.label}}*</label>
+              <div class="rw_input">
+                {{form.last_name}}
+                <span class="text-danger"> {{form.last_name.errors}} </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 col-md-6">
+            <div class="rw_form_inputs">
+              <label class="rw_form_label">{{form.password.label}}*</label>
+              <div class="rw_input">
+                {{form.password}}
+                <span class="text-danger"> {{form.password.errors}} </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <div class="rw_form_inputs">
+              <label class="rw_form_label">{{form.confirm_password.label}}*</label>
+              <div class="rw_input">
+                {{form.confirm_password}}
+                <span class="text-danger">
+                  {{form.confirm_password.errors}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <div class="rw_form_inputs">
+              <label class="rw_form_label">{{form.user_type.label}}</label>
+              <div class="rw_input">
+                {{form.user_type}}
+                <span class="text-danger"> {{form.user_type.errors}} </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rw_save_btn">
+          <button type="button" id="button_submit" class="rw_btn">save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% include "admin/form_validation.html" with form_name="user_form" %}
+
+
+{% endblock %}
