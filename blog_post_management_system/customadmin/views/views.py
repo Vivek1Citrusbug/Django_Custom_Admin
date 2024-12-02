@@ -187,7 +187,7 @@ class MyUserDeleteView(View):
             user.delete()
 
             # delete_user_task.delay(user_id=pk)
-            messages.success(self.request, f"User will deleted.")
+            messages.success(self.request, f"User deleted.")
             return HttpResponseRedirect(reverse("user:user-list"))
 
         except User.DoesNotExist:

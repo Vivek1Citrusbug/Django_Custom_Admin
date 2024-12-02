@@ -10,7 +10,15 @@
 {% include 'includes/sidebar_header.html' %}
 
 <div class="container">
+  
+  <div class="mt-5">
+    <a class="link-danger back-link" href="{% url 'user:user-list' %}">
+      <i class="fa fa-arrow-left">&nbsp; Back</i>
+    </a>
+  </div>
+
   <div class="rw_inner_form_inner_area container">
+    
     <div class="rw_inn_form_box">
       <form action="" method="post" novalidate>
         {% csrf_token %}

@@ -24,11 +24,21 @@ $(document).ready(function () {
       { data: "last_login", name: "last_login" },
       {
         render: function (data, type, JsonResultRow, meta) {
-          return `<div onclick="location.href='/customadmin/user/${JsonResultRow.id}/update'"><a class="link-dark" href="/customadmin/user/${JsonResultRow.id}/update"><i style="font-size:24px" class="fa">&#xf040;</i></a></div>`},
-        data: "first_name",
-        name: "first_name",
+          return `
+            <div class="d-flex justify-content-between">
+              <!-- Update Icon -->
+              <a href="/customadmin/user/${JsonResultRow.id}/update" class="link-dark mr-5">
+                <i style="font-size:24px" class="fa mr-5">&#xf040; </i>
+              </a>
+    
+              <!-- Delete Icon -->
+              <a href="/customadmin/user-delete/${JsonResultRow.id}/delete" class="link-dark" onclick="deleteUser(${JsonResultRow.id})">
+                <i style="font-size:24px" class="fa"> &#xf1f8;</i>
+              </a>
+            </div>
+          `;
+        },
       },
-      
     ],
     columnDefs: [{ orderable: false, targets: [1, 6] }],
     order: [[3, "desc"]],
