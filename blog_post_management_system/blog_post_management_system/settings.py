@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap5',
+    'ajax_datatable',
 ]
 
 EXTERNAL_APPS = [
@@ -146,3 +147,4 @@ MEDIA_ROOT = BASE_DIR/ 'static'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

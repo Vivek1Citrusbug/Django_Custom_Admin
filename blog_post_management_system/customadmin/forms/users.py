@@ -8,6 +8,10 @@ from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
+USER_NAME_REGEX = r'^[a-zA-Z0-9_-]{3,20}$'
+EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+PASSWORD_REGEX = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]:;"\'<>,.?/\\|`~\-]).{8,}$'
+
 class LoginForm(AuthenticationForm):
     error_messages = {
         "invalid_login": _("Please enter a correct %(username)s and password."),
@@ -22,12 +26,11 @@ class CreateUserForm(ModelForm):
     class Meta:
         model = User
         fields = [
+            "username",
             "email",
             "password",
             "first_name",
             "last_name",
-            "username",
-            "is_active",
             "confirm_password",
         ]
 
@@ -38,18 +41,18 @@ class CreateUserForm(ModelForm):
         username = cleaned_data.get("username")
         confirm_password = cleaned_data.get("confirm_password")
 
-        if username and settings.USER_NAME_REGEX:
-            if not re.match(settings.USER_NAME_REGEX, username):
+        if username and USER_NAME_REGEX:
+            if not re.match(USER_NAME_REGEX, username):
                 raise forms.ValidationError(
                     {"username": "Please enter a valid username"}
                 )
 
-        if email and settings.EMAIL_REGEX:
-            if not re.match(settings.EMAIL_REGEX, email):
+        if email and EMAIL_REGEX:
+            if not re.match(EMAIL_REGEX, email):
                 raise forms.ValidationError({"email": "Please enter a valid email"})
 
-        if password and settings.PASSWORD_REGEX:
-            if not re.match(settings.PASSWORD_REGEX, password):
+        if password and PASSWORD_REGEX:
+            if not re.match(PASSWORD_REGEX, password):
                 raise forms.ValidationError(
                     {"password": "Please enter a strong password"}
                 )
@@ -63,8 +66,6 @@ class CreateUserForm(ModelForm):
 
 
 class UpdateUserForm(ModelForm):
-
-    username = forms.EmailField(disabled=True)
 
     class Meta:
         model = User

@@ -22,7 +22,7 @@
         <div class="rw_login_inner">
             <h1>Login</h1>
             {% include 'includes/messages.html' %}
-        <form action="{% url 'admin_login' %}?next={{ next }}" method="post" novalidate>
+        <form action="{% url 'user:admin_login' %}?next={{ next }}" method="post" novalidate>
 
             {% csrf_token %}
         

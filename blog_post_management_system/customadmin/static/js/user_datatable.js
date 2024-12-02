@@ -13,37 +13,14 @@ $(document).ready(function () {
       type: "get",
     },
     columns: [
-      {
-        render: function (data, type, JsonResultRow, meta) {
-          return `<div onclick="location.href='/admin/user/${
-            JsonResultRow._id
-          }/update'"><a class="link-dark" href="/admin/user/${
-            JsonResultRow._id
-          }/update">${
-            !!!(JsonResultRow.first_name + JsonResultRow.last_name)
-              ? "-"
-              : JsonResultRow.first_name + " " + JsonResultRow.last_name
-          }</a></div>`;
-        },
-        data: "first_name",
-        name: "first_name",
-      },
-      // {
-      //   render: function (data, type, JsonResultRow, meta) {
-      //     return `<div onclick="location.href='/admin/company/${
-      //       JsonResultRow.company_id
-      //     }/update'"><a class="link-dark" href="/admin/company/${
-      //       JsonResultRow.company_id
-      //     }/update">${
-      //       !!!JsonResultRow.company ? "-" : JsonResultRow.company
-      //     }</a></div>`;
-      //   },
-      // },
+      { data: "username",name: "username"},
+      { data: "first_name",name: "first_name"},
+      { data: "last_name",name: "first_name"},
       { data: "email", name: "email" },
-      { data: "created_at", name: "created_at" },
-      { data: "user_type", name: "user_type" },
+      { data: "date_joined", name: "date_joined" },
       { data: "is_active", name: "is_active" },
-      { data: "action", name: "action" },
+      { data: "is_staff", name: "is_staff" },
+      { data: "last_login", name: "last_login" },
     ],
     columnDefs: [{ orderable: false, targets: [1, 6] }],
     order: [[3, "desc"]],

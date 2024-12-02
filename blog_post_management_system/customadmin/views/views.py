@@ -2,7 +2,7 @@ from datetime import timezone
 import re
 from typing import Dict
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.views import LoginView
 from django.urls import reverse
@@ -14,10 +14,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
 from django.contrib.auth import get_permission_codename
 from customadmin.mixins import ModelOptsMixin,HasPermissionsMixin
-
-
-
-
+from django.template.loader import get_template
+from django.db.models import Q
+from customadmin.views.generics import MyCreateView
 
 class MyLoginRequiredMixins(LoginRequiredMixin):
     """
@@ -32,7 +31,7 @@ class MyLoginRequiredMixins(LoginRequiredMixin):
                 "403.html",
                 status=403,
             )
-        return redirect("customadmin:admin_login")
+        return redirect("user:admin_login")
     
 
 class MyPermissionRequiredMixin(PermissionRequiredMixin):
@@ -61,18 +60,12 @@ class MyListView(MyLoginRequiredMixins,MyPermissionRequiredMixin,ModelOptsMixin,
 class MyLoginView(LoginView):
     template_name = "admin/admin_login.html"
     form_class = LoginForm
-    next_page = "user-list"
+    next_page = "user:user-list"
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect("user-list")
+            return redirect("user:user-list")
         return super().get(request, *args, **kwargs)
-
-
-# class LogoutView(View):
-#     def get(self, request):
-#         logout(request)
-#         return redirect("customadmin:admin_login")
 
 
 class MyUserListView(MyListView):
@@ -90,149 +83,93 @@ class MyUserListView(MyListView):
         return context_data
 
 
-# class MyUserDeleteView(View):
-#     def get(self, request, pk):
-#         try:
-#             delete_user_task.delay(user_id=pk)
-#             messages.success(self.request, f"User will deleted.")
-#             return HttpResponseRedirect(reverse("user:user-list"))
+class UserListAjaxView(View, HasPermissionsMixin):
+    """
+    Ajax-Pagination view for Userlisting
+    """
 
-#         except User.DoesNotExist:
-#             log.error(
-#                 f"Error at MyUserDeleteView {str(e)} at line {e.__traceback__.tb_lineno}"
-#             )
-#             messages.error(self.request, "User does not exist")
-#             return HttpResponseRedirect(reverse("user:user-list"))
+    model = User
 
-#         except Exception as e:
-#             log.error(
-#                 f"Error at MyUserDeleteView {str(e)} at line {e.__traceback__.tb_lineno}"
-#             )
-#             return HttpResponseRedirect(reverse("user:user-list"))
+    def get_queryset(self):
+        queryset = self.model.objects.exclude(id=self.request.user.id)
+        return queryset
 
-#     @method_decorator(login_required)
-#     def dispatch(self, request, *args, **kwargs):
-#         return super(self.__class__, self).dispatch(request, *args, **kwargs)
+    def _get_is_superuser(self, obj):
+        """Get boolean column markup."""
+        t = get_template("core/partials/list_boolean.html")
+        return t.render({"bool_val": obj.is_superuser})
 
+    def is_orderable(self):
+        """Check if order is defined in dictionary."""
+        return True
 
+    def _get_actions(self, obj):
+        """Get actions column markup."""
+        t = get_template("partials/list_actions.html")
+        opts = self.model._meta
+        return t.render(
+            {
+                "obj": obj,
+                "opts": opts,
+                "has_change_permission": self.has_change_permission(self.request),
+                "has_delete_permission": self.has_delete_permission(self.request),
+            }
+        )
 
+    def _get_check(self, active: bool):
+        template = get_template("partials/list_boolean.html")
+        return template.render({"bool_val": active})
 
+    def filter_queryset(self, qs):
+        """Return the list of items for this view."""
+        # If a search term, filter the query
+        
+        if self.search:
+            return qs.filter(
+                Q(email__icontains=self.search)
+                | Q(first_name__icontains=self.search)
+                | Q(username__icontains=self.search)
+                | Q(last_name__icontains=self.search),
+            )
+        return qs
 
-# class MyLoginView(LoginView):
-#     template_name = "admin/admin_login.html"
-#     form_class = LoginForm
-#     next_page = "company:company-list"
+    def prepare_results(self, qs):
+        """Prepare final result data here."""
+        # Create row data for datatables
+        data = []
+        for user in qs:
+            data.append(
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "is_active": self._get_check(user.is_active),
+                    "is_staff": self._get_check(user.is_staff),
+                    "last_login": user.last_login.strftime("%d/%m/%Y %I:%M %p") if user.last_login else None,
+                    "date_joined": user.date_joined.strftime("%d/%m/%Y %I:%M %p"),
+                    # "action": self._get_actions(user),
+                }
+            )
+        return data
+    
+    def get(self, request, *args, **kwargs):
+       
+        context_data = {}
+        start = int(request.GET.get("start", 0))
+        length = int(request.GET.get("length", 10))
+        queryset = self.get_queryset()[start:start + length]
+        context_data["data"] = self.prepare_results(queryset)
 
-#     def get(self, request, *args, **kwargs):
-#         if request.user.is_authenticated:
-#             return redirect("company:company-list")
-#         return super().get(request, *args, **kwargs)
-
-
-
-# class ForgotPassword(View):
-#     def get(self, request):
-#         return render(request, "admin/forgot_password.html")
-
-#     def post(self, request):
-#         email = request.POST.get("email")
-#         user = User.objects.filter(email=email).filter().first()
-
-#         if user:
-#             if (not user.reset_password_token) or (
-#                 user.reset_token_expiration < timezone.now()
-#             ):
-#                 token = uuid.uuid4()
-#                 user.reset_password_token = str(token)
-#             user.reset_token_expiration = timezone.now() + timezone.timedelta(
-#                 minutes=int(os.getenv("PASSWORD_CHANGE_TOKEN_EXPIRATION", 10))
-#             )
-#             user.save()
-
-#             context = {
-#                 "username": user.username,
-#                 "reset_password_url": f"{os.getenv('HOST_NAME')}admin/reset-password/{user.reset_password_token}",
-#             }
-#             send_forgot_password_email_custom_admin(
-#                 context=context, recipient_list=[user.email]
-#             )
-#             messages.success(request, "Email Has Been Sent For Reset Password")
-#             return render(request, "admin/forgot_password.html")
-#         else:
-#             messages.error(request, "User with given email doesn't exist")
-#             return render(request, "admin/forgot_password.html")
-
-
-# class ResetTokenView(View):
-#     def get(self, request, token):
-#         user = User.objects.filter(reset_password_token=token).first()
-#         if user:
-#             if user.reset_token_expiration > timezone.now():
-#                 request.session["forgot_password_email"] = user.email
-#                 return render(request, "admin/change_password.html")
-#             else:
-#                 return HttpResponse("Token Expired")
-#         else:
-#             return HttpResponse("Invalid Token")
+        return JsonResponse(context_data)
+    
 
 
-# class ChangePasswordView(View):
-#     def get(self, request):
-#         return render(request, "admin/change_password.html")
+class CreateUserView(MyCreateView):
+    model = User
 
-#     def post(self, request):
-#         email = self.request.session.get("forgot_password_email")
-#         if email is None:
-#             return redirect("customadmin:forgot_password")
-#         user = User.objects.filter(email=email).first()
-#         new_password = request.POST.get("new_password")
-#         confirm_new_password = request.POST.get("confirm_new_password")
-#         if not re.match(settings.PASSWORD_REGEX, new_password):
-#             messages.error(request, "Please enter a strong password")
-#             return render(request, "admin/change_password.html")
+    def get_form_class(self):
+            return CreateUserForm
 
-#         if new_password == confirm_new_password:
-#             user.set_password(new_password)
-#             user.reset_password_token = None
-#             user.reset_token_expiration = None
-#             user.save()
-#             del self.request.session["forgot_password_email"]
-#             messages.success(request, "Your Password Has Been Successfully Changed")
-#             return redirect("customadmin:admin_login")
-#         else:
-#             messages.error(
-#                 request, "New password and confirm new password did not match"
-#             )
-#             return render(request, "admin/change_password.html")
-
-
-# class CreateUserView(MyCreateView):
-#     model = User
-#     template_name = "admin/user_create.html"
-#     def get_form_class(self):
-#             return CreateUserForm
-
-# class UserProfileView(MyUpdateView):
-#     model = User
-#     template_name = "admin/user_update.html"
-
-
-# class UpdateUserView(MyUpdateView):
-#     model = User
-#     form_class = UpdateUserForm
-#     template_name = "admin/user_update.html"
-
-#     def get_initial(self) -> dict:
-#         initial = super().get_initial()
-#         company = (
-#             Company.objects.filter(pk=self.get_object().company_id).first()
-#             or "deleted company"
-#         )
-
-#         level = ActivityLevel.objects.filter(
-#             pk=self.get_object().activity_level_id
-#         ).first()
-
-#         initial["company_id"] = company
-#         initial["activity_level_id"] = level.name if level else "not selected"
-#         return initial
+    template_name = "admin/user_create.html"

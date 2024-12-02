@@ -2,12 +2,12 @@
 <div class="row">
   {% if has_view_permission or has_change_permission or has_delete_permission %}
   <div class="col-lg-6">
-    <a
+    {% comment %} <a
       href="{% url opts|admin_urlname:'update' obj.pk %}"
       class="btn btn-xs btn btn-sm btn-sm"
       title="Edit"
       ><i class="fa-solid fa-pen text-primary"></i
-    ></a>
+    ></a> {% endcomment %}
   </div>
 
   {% endif %} {% if has_delete_permission %}

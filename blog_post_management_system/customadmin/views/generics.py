@@ -110,7 +110,7 @@ class MyCreateView(
             return super().has_permission()
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        if not self.request.user.is_admin() and "company" in request.path:
+        if not self.request.user.is_superuser:
             messages.error(
                 self.request,
                 "You don't have permission to create company",
