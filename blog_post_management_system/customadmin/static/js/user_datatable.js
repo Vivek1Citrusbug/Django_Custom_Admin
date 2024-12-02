@@ -13,6 +13,7 @@ $(document).ready(function () {
       type: "get",
     },
     columns: [
+      { data: "id",name:"id"},
       { data: "username",name: "username"},
       { data: "first_name",name: "first_name"},
       { data: "last_name",name: "first_name"},
@@ -21,6 +22,13 @@ $(document).ready(function () {
       { data: "is_active", name: "is_active" },
       { data: "is_staff", name: "is_staff" },
       { data: "last_login", name: "last_login" },
+      {
+        render: function (data, type, JsonResultRow, meta) {
+          return `<div onclick="location.href='/customadmin/user/${JsonResultRow.id}/update'"><a class="link-dark" href="/customadmin/user/${JsonResultRow.id}/update">Update</a></div>`},
+        data: "first_name",
+        name: "first_name",
+      },
+      
     ],
     columnDefs: [{ orderable: false, targets: [1, 6] }],
     order: [[3, "desc"]],

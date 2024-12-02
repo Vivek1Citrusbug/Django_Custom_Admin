@@ -1,16 +1,22 @@
-{% load misc_filters %} {% load static %}
+{% load misc_filters %} 
+{% load static %}
+
 <div class="row">
   {% if has_view_permission or has_change_permission or has_delete_permission %}
+  
   <div class="col-lg-6">
-    {% comment %} <a
+   <a
       href="{% url opts|admin_urlname:'update' obj.pk %}"
       class="btn btn-xs btn btn-sm btn-sm"
       title="Edit"
       ><i class="fa-solid fa-pen text-primary"></i
-    ></a> {% endcomment %}
+    ></a> 
   </div>
 
-  {% endif %} {% if has_delete_permission %}
+  {% endif %} 
+
+  {% if has_delete_permission %}
+
   <div class="col-lg-6">
     <a
       id="delete-{{opts.model_name}}-{{obj.pk}}"
@@ -20,6 +26,7 @@
     ></a>
   </div>
 </div>
+
 <script>
   $(document).ready(function () {
     $("#delete-{{opts.model_name}}-{{obj.pk}}").on("click", function () {

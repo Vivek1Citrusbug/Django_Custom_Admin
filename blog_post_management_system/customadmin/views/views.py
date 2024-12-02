@@ -16,7 +16,10 @@ from django.contrib.auth import get_permission_codename
 from customadmin.mixins import ModelOptsMixin,HasPermissionsMixin
 from django.template.loader import get_template
 from django.db.models import Q
-from customadmin.views.generics import MyCreateView
+from customadmin.views.generics import MyCreateView,MyUpdateView
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+
 
 class MyLoginRequiredMixins(LoginRequiredMixin):
     """
@@ -149,7 +152,7 @@ class UserListAjaxView(View, HasPermissionsMixin):
                     "is_staff": self._get_check(user.is_staff),
                     "last_login": user.last_login.strftime("%d/%m/%Y %I:%M %p") if user.last_login else None,
                     "date_joined": user.date_joined.strftime("%d/%m/%Y %I:%M %p"),
-                    # "action": self._get_actions(user),
+                    "action": self._get_actions(user),
                 }
             )
         return data
@@ -173,3 +176,41 @@ class CreateUserView(MyCreateView):
             return CreateUserForm
 
     template_name = "admin/user_create.html"
+
+class MyUserDeleteView(View):
+
+    def get(self, request, pk):
+        try:
+            # Retrieve the user by primary key
+            user = User.objects.get(id=pk)
+
+            # Delete the user
+            user.delete()
+
+            # delete_user_task.delay(user_id=pk)
+            messages.success(self.request, f"User will deleted.")
+            return HttpResponseRedirect(reverse("user:user-list"))
+
+        except User.DoesNotExist:
+            messages.error(self.request, "User does not exist")
+            return HttpResponseRedirect(reverse("user:user-list"))
+
+        except Exception as e:
+            return HttpResponseRedirect(reverse("user:user-list"))
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(self.__class__, self).dispatch(request, *args, **kwargs)
+    
+class UpdateUserView(MyUpdateView):
+    model = User
+    form_class = UpdateUserForm
+    template_name = "admin/user_update.html"
+
+    def get_initial(self) -> dict:
+        initial = super().get_initial()
+        return initial
+    
+class UserProfileView(MyUpdateView):
+    model = User
+    template_name = "admin/user_update.html"

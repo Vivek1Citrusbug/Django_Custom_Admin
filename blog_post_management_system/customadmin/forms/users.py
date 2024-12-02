@@ -64,6 +64,14 @@ class CreateUserForm(ModelForm):
 
         return cleaned_data
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        password = self.cleaned_data["password"]
+        user.set_password(password) 
+        if commit:
+            user.save()
+        return user
+
 
 class UpdateUserForm(ModelForm):
 

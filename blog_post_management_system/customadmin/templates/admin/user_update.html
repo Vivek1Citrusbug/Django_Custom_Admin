@@ -1,6 +1,11 @@
-{% extends 'base/base.html' %} {% load static %} {% load widget_tweaks %} {%
-block title %} {{ opts.verbose_name_plural|capfirst }} | Just Move {% endblock
-%} {% block content %}
+{% extends 'base/base.html' %} 
+{% load static %} 
+{% comment %} {% load widget_tweaks %}  {% endcomment %}
+{%block title %} 
+{{ opts.verbose_name_plural|capfirst }} | Just Move 
+{% endblock%} 
+{% block content %}
+
 <!-- {{form.as_p}} -->
 {% include 'includes/sidebar_header.html' %}
 

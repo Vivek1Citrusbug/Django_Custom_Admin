@@ -115,7 +115,7 @@ class MyCreateView(
                 self.request,
                 "You don't have permission to create company",
             )
-            return HttpResponseRedirect(reverse("company:company-list"))
+            return HttpResponseRedirect(reverse("user:user-list"))
         return super().get(request, *args, **kwargs)
 
 
@@ -153,7 +153,7 @@ class MyUpdateView(
             return super().get(request, *args, **kwargs)
         except ValidationError:
             messages.error(request=request, message="Invalid URL")
-            return redirect("company:company-list")
+            return redirect("user:user-list")
 
     def get_permission_required(self):
         """Default to view and change perms."""
