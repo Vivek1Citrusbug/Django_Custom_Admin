@@ -1,8 +1,83 @@
 {% extends 'base/base.html' %}
 {% block content %}
 {% include 'includes/sidebar_header.html' %}
+<style>
+    .profile-card {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 30px;
+    }
+    .profile-header {
+        text-align: center;
+    }
+    .profile-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    .profile-header p {
+        font-size: 1.1rem;
+        color: #6c757d;
+    }
+    .profile-image {
+        max-width: 150px;
+        height: auto;
+        border-radius: 50%;
+    }
+    .profile-details dt {
+        font-weight: bold;
+    }
+    .profile-details dd {
+        margin-bottom: 20px;
+    }
 
-<div class="container"><h1>{{object}}</h1>
+</style>
 
+<div class="container">
+    <div class="mt-5">
+        <a class="link-danger back-link" href="{% url 'user:user-list' %}">
+          <i class="fa fa-arrow-left">&nbsp; Back</i>
+        </a>
+      </div>
+    <!-- Profile Card -->
+    <div class="profile-card card shadow-sm">
+        <!-- Profile Header -->
+        <div class="profile-header card-body">
+            <h1 class="card-title">{{ object.first_name }} {{ object.last_name }}</h1>
+            <p class="card-text">Username: {{ object.username }}</p>
+        </div>
+
+        <!-- Profile Image and Details -->
+        <div class="row card-body">
+            <!-- Profile Image -->
+            <div class="col-md-4 text-center">
+                <img src="{{ object.profile_image.url }}" alt="Profile Image" class="profile-image">
+            </div>
+
+            <!-- Profile Information -->
+            <div class="col-md-8">
+                <dl class="row profile-details">
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">{{ object.email }}</dd>
+
+                    <dt class="col-sm-4">Date Joined:</dt>
+                    <dd class="col-sm-8">{{ object.date_joined }}</dd>
+
+                    <dt class="col-sm-4">Last Login:</dt>
+                    <dd class="col-sm-8">{{ object.last_login }}</dd>
+
+                    <dt class="col-sm-4">Active Status:</dt>
+                    <dd class="col-sm-8">{{ object.is_active|yesno:"Active,Inactive" }}</dd>
+
+                    <dt class="col-sm-4">Admin Status:</dt>
+                    <dd class="col-sm-8">{{ object.is_staff|yesno:"Admin,Not an Admin" }}</dd>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Buttons (Optional) -->
+        <div class="card-footer text-center">
+            <a href="/customadmin/user/{{ object.id }}/update/" class="btn btn-primary">Edit Profile</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

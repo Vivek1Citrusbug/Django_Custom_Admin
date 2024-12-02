@@ -24,7 +24,7 @@ $(document).ready(function () {
       { data: "last_login", name: "last_login" },
       {
         render: function (data, type, JsonResultRow, meta) {
-          return `<div onclick="location.href='/customadmin/user/${JsonResultRow.id}/update'"><a class="link-dark" href="/customadmin/user/${JsonResultRow.id}/update">Update</a></div>`},
+          return `<div onclick="location.href='/customadmin/user/${JsonResultRow.id}/update'"><a class="link-dark" href="/customadmin/user/${JsonResultRow.id}/update"><i style="font-size:24px" class="fa">&#xf040;</i></a></div>`},
         data: "first_name",
         name: "first_name",
       },
@@ -40,7 +40,9 @@ $(document).ready(function () {
       },
     },
   });
-  // table.on("click", "tbody tr", function () {
-  //   location.href = `/admin/user/${table.row(this).data()._id}/update`;
-  // });
+
+  table.on("click", "tbody tr", function () {
+    location.href = `/customadmin/user/${table.row(this).data().id}`
+  });
+
 });

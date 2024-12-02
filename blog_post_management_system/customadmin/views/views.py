@@ -168,7 +168,6 @@ class UserListAjaxView(View, HasPermissionsMixin):
         return JsonResponse(context_data)
     
 
-
 class CreateUserView(MyCreateView):
     model = User
 
@@ -213,4 +212,6 @@ class UpdateUserView(MyUpdateView):
     
 class UserProfileView(MyUpdateView):
     model = User
-    template_name = "admin/user_update.html"
+    template_name = "admin/user_detail.html"
+    # form_class = UpdateUserForm
+    fields = ['username','first_name', 'last_name', 'email']
