@@ -20,7 +20,7 @@ from customadmin.views.generics import MyCreateView,MyUpdateView,MyListView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout,login
- 
+from accounts.models import UserProfile
         
 class MyLoginView(LoginView):
     template_name = "admin/admin_login.html"
@@ -68,7 +68,7 @@ class UserListAjaxView(View, HasPermissionsMixin):
     """
     Ajax-Pagination view for Userlisting
     """
-
+    template_name = "admin/user_list.html"
     model = User
 
     def get_queryset(self):
@@ -116,7 +116,7 @@ class UserListAjaxView(View, HasPermissionsMixin):
 
     def prepare_results(self, qs):
         """Prepare final result data here."""
-        # Create row data for data table
+    
         data = []
         for user in qs:
             data.append(
@@ -141,8 +141,10 @@ class UserListAjaxView(View, HasPermissionsMixin):
         start = int(request.GET.get("start", 0))
         length = int(request.GET.get("length", 10))
         queryset = self.get_queryset()[start:start + length]
-        context_data["data"] = self.prepare_results(queryset)
-
+        data = self.prepare_results(queryset)
+        context_data["data"] = data
+        context_data["columns"] = list(data[0].keys()) if data else []
+        print(context_data["columns"])
         return JsonResponse(context_data)
     
 
