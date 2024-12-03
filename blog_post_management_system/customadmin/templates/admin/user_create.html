@@ -92,14 +92,14 @@
         </div>
 
         <div class="rw_save_btn">
-          <button type="button" id="button_submit" class="rw_btn">save</button>
+          <button type="submit" id="button_submit" class="rw_btn">save</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
-{% include "admin/form_validation.html" with form_name="user_form" %}
+{% comment %} {% include "admin/form_validation.html" with form_name="user_form" %} {% endcomment %}
 
 
 {% endblock %}
