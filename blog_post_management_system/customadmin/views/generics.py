@@ -66,7 +66,8 @@ class MyLoginRequiredMixins(LoginRequiredMixin):
                 "403.html",
                 status=403,
             )
-        return redirect("customadmin:admin_login")
+            # return HttpResponse("You don't have admin permission")
+        return redirect("user:admin_login")
 
 
 class MyListView(

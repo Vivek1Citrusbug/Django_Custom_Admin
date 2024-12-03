@@ -8,7 +8,7 @@
                 <h3>Hello, {{request.user.username}}</h3>
             </div>
 
-            {% comment %} <a href="{% url 'logout' %}" class="btn btn-outline-danger text-dark logout-btn">Logout</a> {% endcomment %}
+            <a href="{% url 'user:logout' %}" class="btn btn-outline-danger text-dark logout-btn">Logout</a> 
         </div>
     </div>
     <div class="rw_sidebar">
@@ -24,7 +24,7 @@
         <ul>
             {% comment %} USERS {% endcomment %}
             {% if request.user.is_admin %}
-            <li><a href="{% url 'user-list' %}" {% if '/user' in request.path %} class="active" 
+            <li><a href="{% url 'user:user-list' %}" {% if '/user' in request.path %} class="active" 
                 {% endif %} title="Users"><img src="{% static 'images/icons/group.svg' %}" alt="user">
                 <span>Users</span>
             </a></li>

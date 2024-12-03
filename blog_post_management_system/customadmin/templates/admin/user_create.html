@@ -2,7 +2,7 @@
 {% load static %} 
 {% comment %} {% load widget_tweaks %} {% endcomment %}
 {%block title %} 
-{{ opts.verbose_name_plural|capfirst }} | Just Move 
+{{ opts.verbose_name_plural|capfirst }} | BlogPost
 {% endblock %}
 {%block content %} 
 {% include 'includes/sidebar_header.html' %}
@@ -77,15 +77,6 @@
                 <span class="text-danger">
                   {{form.confirm_password.errors}}
                 </span>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-md-6">
-            <div class="rw_form_inputs">
-              <label class="rw_form_label">{{form.user_type.label}}</label>
-              <div class="rw_input">
-                {{form.user_type}}
-                <span class="text-danger"> {{form.user_type.errors}} </span>
               </div>
             </div>
           </div>
