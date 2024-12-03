@@ -9,6 +9,7 @@ $(document).ready(function () {
     processing: true,
     serverSide: true,
     ajax: {
+      context: this,
       url: window.datatable_url,
       type: "get",
     },
@@ -32,8 +33,9 @@ $(document).ready(function () {
               </a>
     
               <!-- Delete Icon -->
-              <a href="/customadmin/user-delete/${JsonResultRow.id}/delete" class="link-dark" onclick="deleteUser(${JsonResultRow.id})">
-                <i style="font-size:24px" class="fa"> &#xf1f8;</i>
+              
+              <a href="/customadmin/user-delete/${JsonResultRow.id}/" class="link-dark" onclick="togglePopup(${JsonResultRow.id})">
+                  <i style="font-size:24px" class="fa"> &#xf1f8;</i>
               </a>
             </div>
           `;

@@ -8,7 +8,7 @@
                 <h3>Hello, {{request.user.username}}</h3>
             </div>
 
-            {% comment %} <a href="{% url 'logout' %}" class="btn btn-outline-danger text-dark logout-btn">Logout</a> {% endcomment %}
+            <a href="{% url 'user:logout' %}" class="btn btn-outline-danger text-dark logout-btn">Logout</a> 
         </div>
     </div>
     <div class="rw_sidebar">
@@ -22,19 +22,19 @@
             {% endif %}
         </div>
         <ul>
-            {% comment %} USERS {% endcomment %}
+            {% comment %} USERS  {% endcomment %}
             {% if request.user.is_admin %}
-            <li><a href="{% url 'user-list' %}" {% if '/user' in request.path %} class="active" 
+            <li><a href="{% url 'user:user-list' %}" {% if '/user' in request.path %} class="active" 
                 {% endif %} title="Users"><img src="{% static 'images/icons/group.svg' %}" alt="user">
                 <span>Users</span>
             </a></li>
             {% endif %}
-
-            {% comment %} COMPANIES {% endcomment %}
-            {% comment %} <li><a href="{% url 'company:company-list' %}" {% if '/company' in request.path %} class="active" 
-                {% endif %} title="Companies"><img src="{% static 'images/icons/agency.svg' %}" alt="company">
-                <span>Companies</span>
-            </a></li> {% endcomment %}
+            
+            {% comment %} POSTS  {% endcomment %}
+            {% comment %} <li><a href="{% url 'posts:list-post' %}" {% if '/post' in request.path %} class="active" 
+                {% endif %} title="posts"><img src="{% static 'images/icons/agency.svg' %}" alt="post">
+                <span>Posts</span>
+            </a></li>  {% endcomment %}
             
             {% comment %} ACTIVE BREAKS {% endcomment %}
             {% comment %} {% if request.user.is_admin %} {% endcomment %}

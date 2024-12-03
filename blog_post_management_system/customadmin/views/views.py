@@ -16,49 +16,11 @@ from django.contrib.auth import get_permission_codename
 from customadmin.mixins import ModelOptsMixin,HasPermissionsMixin
 from django.template.loader import get_template
 from django.db.models import Q
-from customadmin.views.generics import MyCreateView,MyUpdateView
+from customadmin.views.generics import MyCreateView,MyUpdateView,MyListView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-
-
-class MyLoginRequiredMixins(LoginRequiredMixin):
-    """
-    Custom Login Required Mixins that override the handle_no_permission method
-    """
-
-    def handle_no_permission(self) -> HttpResponseRedirect:
-        """Redirect to the admin login page"""
-        if self.request.user.is_authenticated:
-            return render(
-                self.request,
-                "403.html",
-                status=403,
-            )
-        return redirect("user:admin_login")
-    
-
-class MyPermissionRequiredMixin(PermissionRequiredMixin):
-    raise_exception = True
-
-    def get_permission_required(self):
-        """Default to view and change perms."""
-        opts = self.model._meta
-        codename_view = get_permission_codename("view", opts)
-        codename_change = get_permission_codename("change", opts)
-        view_perm = f"{opts.app_label}.{codename_view}"
-        change_perm = f"{opts.app_label}.{codename_change}"
-        perms = (view_perm, change_perm)
-        return perms
-
-
-class MyListView(MyLoginRequiredMixins,MyPermissionRequiredMixin,ModelOptsMixin,HasPermissionsMixin,ListView):
-    """ListView CBV with LoginRequiredMixin and PermissionRequiredMixin."""
-
-    def has_permission(self):
-        if self.request.user.is_staff == True:
-            return True
-        else:
-            return super().has_permission()
+from django.contrib.auth import logout,login
+from accounts.models import UserProfile
         
 class MyLoginView(LoginView):
     template_name = "admin/admin_login.html"
@@ -66,11 +28,27 @@ class MyLoginView(LoginView):
     next_page = "user:user-list"
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect("user:user-list")
-        return super().get(request, *args, **kwargs)
+        if request.user.is_authenticated:  
+            if not request.user.is_superuser:  
+                return redirect('user:admin_login')  
+            return redirect(self.next_page) 
+        return super().get(request, *args, **kwargs) 
+    
+    def form_valid(self, form):
+        user = form.get_user()
+        if user.is_superuser: 
+            login(self.request, user)  
+            return super().form_valid(form)  
+        else:
+            form.add_error(None, "You must be a superuser to access this panel.")
+            return self.form_invalid(form)
 
 
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect("user:admin_login")
+    
 class MyUserListView(MyListView):
     template_name = "admin/user_list.html"
     model = User
@@ -90,7 +68,7 @@ class UserListAjaxView(View, HasPermissionsMixin):
     """
     Ajax-Pagination view for Userlisting
     """
-
+    template_name = "admin/user_list.html"
     model = User
 
     def get_queryset(self):
@@ -138,7 +116,7 @@ class UserListAjaxView(View, HasPermissionsMixin):
 
     def prepare_results(self, qs):
         """Prepare final result data here."""
-        # Create row data for datatables
+    
         data = []
         for user in qs:
             data.append(
@@ -163,8 +141,10 @@ class UserListAjaxView(View, HasPermissionsMixin):
         start = int(request.GET.get("start", 0))
         length = int(request.GET.get("length", 10))
         queryset = self.get_queryset()[start:start + length]
-        context_data["data"] = self.prepare_results(queryset)
-
+        data = self.prepare_results(queryset)
+        context_data["data"] = data
+        context_data["columns"] = list(data[0].keys()) if data else []
+        print(context_data["columns"])
         return JsonResponse(context_data)
     
 
@@ -180,12 +160,8 @@ class MyUserDeleteView(View):
 
     def get(self, request, pk):
         try:
-            # Retrieve the user by primary key
             user = User.objects.get(id=pk)
-
-            # Delete the user
             user.delete()
-
             # delete_user_task.delay(user_id=pk)
             messages.success(self.request, f"User deleted.")
             return HttpResponseRedirect(reverse("user:user-list"))

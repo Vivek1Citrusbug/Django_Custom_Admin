@@ -1,18 +1,21 @@
 import re
 from typing import Any, Dict
-
 from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
+from django.forms.widgets import PasswordInput, TextInput
 
 USER_NAME_REGEX = r'^[a-zA-Z0-9_-]{3,20}$'
 EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 PASSWORD_REGEX = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]:;"\'<>,.?/\\|`~\-]).{8,}$'
 
 class LoginForm(AuthenticationForm):
+    username = forms.CharField(widget=TextInput(), required=True)
+    password = forms.CharField(widget=PasswordInput(), required=True)
+    
     error_messages = {
         "invalid_login": _("Please enter a correct %(username)s and password."),
         "inactive": _("This account is inactive."),
@@ -20,9 +23,13 @@ class LoginForm(AuthenticationForm):
 
 
 class CreateUserForm(ModelForm):
-
+    username = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
+    password = forms.CharField(required=True)
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
     confirm_password = forms.CharField(required=True)
-
+    
     class Meta:
         model = User
         fields = [
