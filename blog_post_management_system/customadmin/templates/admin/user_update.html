@@ -71,7 +71,11 @@
             <div class="rw_form_inputs">
               <label class="rw_form_label">{{ profile_form.profile_picture.label }}</label>
               <div class="rw_input">
-                {{ profile_form.profile_picture }}
+                <input class="form-control"
+                                       type="file"
+                                       id="id_profile_picture"
+                                       name="profile_picture">
+                  {% comment %} {{ profile_form.profile_picture }} {% endcomment %}
                 <span class="text-danger">{{ profile_form.profile_picture.errors }}</span>
                 <span class="input_icon business"></span>
               </div>
