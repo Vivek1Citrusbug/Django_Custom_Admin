@@ -66,6 +66,7 @@ class MyUserListView(MyListView):
         context_data["opts"] = self.model._meta
         print( context_data["opts"],"###################")
         context_data["count"] = self.model.objects.count()
+
         return context_data
 
 
@@ -159,7 +160,7 @@ class UserListAjaxView(View, HasPermissionsMixin):
 
         # return context
         context_data["data"] = data
-        context_data["columns"] = list(data[0].keys()) if data else []
+        # context_data["columns"] = list(data[0].keys()) if data else []
         context_data["draw"] = draw
         context_data["recordsTotal"] = total_records
         context_data["recordsFiltered"] = filtered_records

@@ -2,7 +2,7 @@ from django.urls import path,include
 from  ..views.views import MyLoginView,MyUserListView,UserListAjaxView,CreateUserView,UpdateUserView,MyUserDeleteView,UserProfileView,LogoutView
 # from django.contrib.auth.templates 
 
-# app_name = "user"
+# app_name = "root"
 
 urlpatterns = [
     path("",include('customadmin.urls.account_urls')),
