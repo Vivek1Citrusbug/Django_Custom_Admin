@@ -158,7 +158,6 @@ class UserListAjaxView(View, HasPermissionsMixin):
 
 class CreateUserView(MyCreateView):
     model = User
-
     def get_form_class(self):
             return CreateUserForm
 
@@ -185,8 +184,8 @@ class MyUserDeleteView(View):
     def dispatch(self, request, *args, **kwargs):
         return super(self.__class__, self).dispatch(request, *args, **kwargs)
     
-class UpdateUserView(MyUpdateView):
 
+class UpdateUserView(MyUpdateView):
     model = User
     form_class = UpdateUserForm
     template_name = 'admin/user_update.html'
@@ -211,39 +210,19 @@ class UpdateUserView(MyUpdateView):
             profile_form.save()
         return redirect(self.success_url)
 
-    
-
-
-
 
 class UserProfileView(MyUpdateView):
     model = User
     template_name = "admin/user_detail.html"
     fields = ['username','first_name', 'last_name', 'email']
 
-
-# class ProfileDetailView(LoginRequiredMixin, DetailView):
-#     """This view is used for listing profile details"""
-
-#     model = UserProfile
-#     template_name = "admin/user_detail.html"
-#     context_object_name = "profile"
-
-#     def get_object(self):
-#         profile, created = UserProfile.objects.get_or_create(user=self.request.user)
-#         return profile
-
-
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    """This view is used for profile update"""
-
-    model = UserProfile
-    form_class = UserProfileForm
-    template_name = "accounts/edit_profile.html"
-
-    def get_success_url(self):
-        return reverse_lazy("profile")
-
     def get_object(self):
-        profile, created = UserProfile.objects.get_or_create(user=self.request.user)
-        return profile
+        user = super().get_object()
+        user_profile, created = UserProfile.objects.get_or_create(user=user)
+        user.profile = user_profile
+        return user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile_form'] = UserProfileForm(instance=self.object.profile)
+        return context

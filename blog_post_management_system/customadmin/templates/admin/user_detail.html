@@ -50,7 +50,7 @@
         <div class="row card-body">
             <!-- Profile Image -->
             <div class="col-md-4 text-center">
-                <img src="{{ object.profile_image.url }}" alt="Profile Image" class="profile-image">
+                <img {% if profile_form.profile_picture.value %} src="{{ profile_form.profile_picture.value.url }}" {% endif %} alt="Profile Image" class="profile-image">
             </div>
 
             <!-- Profile Information -->

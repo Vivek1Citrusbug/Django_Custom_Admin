@@ -17,86 +17,6 @@
     </a>
   </div>
 
-  {% comment %} <div class="rw_inner_form_inner_area container">
-    
-    <div class="rw_inn_form_box">
-      <form action="" method="post" novalidate>
-        {% csrf_token %}
-        <div class="col-lg-12 col-md-6">
-          <div class="rw_form_inputs d-flex justify-content-center">
-            <img
-              onclick="$('#id_image').click()"
-              class="w-25"
-              style="border-radius: 50%; cursor: pointer"
-              src="{% if form.image.value %}{{form.image.value.url}} {% else %} {% static '/images/uplaod-image.jpg' %} {% endif %}"
-              alt=""
-            />
-          </div>
-        </div>
-        <div class="row">
-          {% for f in form %} {% if not f.name == "image" %}
-          <div class="col-lg-6 col-md-6">
-            <div class="rw_form_inputs">
-              <label class="rw_form_label">{{f.label}}</label>
-              <div class="rw_input">
-                {{f}}
-                <span class="text-danger">{{f.errors}} </span>
-                <span class="input_icon business"></span>
-              </div>
-            </div>
-          </div>
-          {% endif %} {% endfor %}
-        </div>
-        <div class="rw_save_btn">
-          <button type="button " class="rw_btn">save</button>
-        </div>
-      </form>
-
-      
-    </div>
-  </div> {% endcomment %}
-
-  {% comment %} <h2>Update User Profile</h2>
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-
-    <!-- User Form (for user-related fields like username, email) -->
-    <div class="form-group">
-      <label for="id_username">Username</label>
-      {{ form.username }}
-    </div>
-    
-    <div class="form-group">
-      <label for="id_first_name">First Name</label>
-      {{ form.first_name }}
-    </div>
-
-    <div class="form-group">
-      <label for="id_last_name">Last Name</label>
-      {{ form.last_name }}
-    </div>
-
-    <div class="form-group">
-      <label for="id_email">Email</label>
-      {{ form.email }}
-    </div>
-
-    <hr>
-
-    <!-- Profile Form (for profile-related fields like bio and profile picture) -->
-    <div class="form-group">
-      <label for="id_bio">Bio</label>
-      {{ profile_form.bio }}
-    </div>
-
-    <div class="form-group">
-      <label for="id_profile_picture">Profile Picture</label>
-      {{ profile_form.profile_picture }}
-    </div>
-
-    <button type="submit" class="btn btn-primary">Update Profile</button>
-  </form> {% endcomment %}
-
   <div class="rw_inner_form_inner_area container">
     <div class="rw_inn_form_box">
       <form method="POST" enctype="multipart/form-data" novalidate>
@@ -109,7 +29,7 @@
               onclick="$('#id_image').click()"
               class="w-25"
               style="border-radius: 50%; cursor: pointer"
-              src="{% if form.image.value %}{{ form.image.value.url }}{% else %}{% static '/images/uplaod-image.jpg' %}{% endif %}"
+              src="{% if profile_form.profile_picture.value %}{{ profile_form.profile_picture.value.url }}{% else %}{% static '/images/uplaod-image.jpg' %}{% endif %}"
               alt="Profile Picture"
             />
           </div>
@@ -168,4 +88,5 @@
   </div>
   
 </div>
+
 {% endblock %}
