@@ -21,7 +21,10 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout,login
 from accounts.models import UserProfile
-        
+from django.views.generic import DetailView, UpdateView
+from customadmin.forms.users import UserProfileForm
+from django.urls import reverse_lazy
+
 class MyLoginView(LoginView):
     template_name = "admin/admin_login.html"
     form_class = LoginForm
@@ -59,8 +62,11 @@ class MyUserListView(MyListView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        print(context_data,"###################")
         context_data["opts"] = self.model._meta
+        print( context_data["opts"],"###################")
         context_data["count"] = self.model.objects.count()
+
         return context_data
 
 
@@ -103,13 +109,22 @@ class UserListAjaxView(View, HasPermissionsMixin):
 
     def prepare_results(self, qs):
         """Prepare final result data here."""
-    
+        company_instances = UserProfile.objects.all().values_list("pk", "bio", "profile_picture", "user_id")
+        company_name_dict = {str(x[3]): [x[0], x[1], x[2]] for x in company_instances}
+        
+
         data = []
+        
         for user in qs:
+            profile_picture = company_name_dict.get(str(user.id), [None, None, None])[2]
+            if profile_picture:
+                profile_picture = "/images/"+profile_picture
+
             data.append(
                 {
                     "id": user.id,
-                    "username": user.username,
+                    "profile_picture":profile_picture,
+                    "username": [user.username],
                     "email": user.email,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
@@ -143,9 +158,9 @@ class UserListAjaxView(View, HasPermissionsMixin):
         queryset = queryset[start:start + length]
         data = self.prepare_results(queryset)
 
-        # Build the response
+        # return context
         context_data["data"] = data
-        context_data["columns"] = list(data[0].keys()) if data else []
+        # context_data["columns"] = list(data[0].keys()) if data else []
         context_data["draw"] = draw
         context_data["recordsTotal"] = total_records
         context_data["recordsFiltered"] = filtered_records
@@ -155,7 +170,6 @@ class UserListAjaxView(View, HasPermissionsMixin):
 
 class CreateUserView(MyCreateView):
     model = User
-
     def get_form_class(self):
             return CreateUserForm
 
@@ -167,6 +181,7 @@ class MyUserDeleteView(View):
         try:
             user = User.objects.get(id=pk)
             user.delete()
+            print("Inside delete view #########################")
             # delete_user_task.delay(user_id=pk)
             messages.success(self.request, f"User deleted.")
             return HttpResponseRedirect(reverse("user:user-list"))
@@ -182,17 +197,45 @@ class MyUserDeleteView(View):
     def dispatch(self, request, *args, **kwargs):
         return super(self.__class__, self).dispatch(request, *args, **kwargs)
     
+
 class UpdateUserView(MyUpdateView):
     model = User
     form_class = UpdateUserForm
-    template_name = "admin/user_update.html"
+    template_name = 'admin/user_update.html'
+    success_url = reverse_lazy('user:user-list') 
 
-    def get_initial(self) -> dict:
-        initial = super().get_initial()
-        return initial
-    
+    def get_object(self):
+        user = super().get_object()
+        user_profile, created = UserProfile.objects.get_or_create(user=user)
+        user.profile = user_profile
+        return user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile_form'] = UserProfileForm(instance=self.object.profile)
+        return context
+
+    def form_valid(self, form):
+        user_form = form.save(commit=False)
+        user_form.save()
+        profile_form = UserProfileForm(self.request.POST, self.request.FILES, instance=self.object.profile)
+        if profile_form.is_valid():
+            profile_form.save()
+        return redirect(self.success_url)
+
+
 class UserProfileView(MyUpdateView):
     model = User
     template_name = "admin/user_detail.html"
-    # form_class = UpdateUserForm
     fields = ['username','first_name', 'last_name', 'email']
+
+    def get_object(self):
+        user = super().get_object()
+        user_profile, created = UserProfile.objects.get_or_create(user=user)
+        user.profile = user_profile
+        return user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile_form'] = UserProfileForm(instance=self.object.profile)
+        return context

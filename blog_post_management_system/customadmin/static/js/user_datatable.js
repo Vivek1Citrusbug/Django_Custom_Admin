@@ -9,41 +9,30 @@ $(document).ready(function () {
     processing: true,
     serverSide: true,
     ajax: {
-      context: this,
+      // context: this,
       url: window.datatable_url,
       type: "get",
     },
     columns: [
-      { data: "id",name:"id"},
-      { data: "username",name: "username"},
-      { data: "first_name",name: "first_name"},
-      { data: "last_name",name: "first_name"},
+      { data: "id", name: "id", },
+      { data : "profile_picture" ,name : "profile_picture",
+        render: function (data, type, JsonResultRow, meta) {
+          let profile_picture = JsonResultRow.profile_picture ? JsonResultRow.profile_picture : '/static/images/default-user-profile-photo.png';
+          return `<img src="${profile_picture}" alt="Profile Picture" class="profile-img" style="width: 40px; height: 40px; border-radius: 50%;"></img>`
+        },
+      },
+      { data: "username", name: "username", },
+      { data: "first_name", name: "first_name" },
+      { data: "last_name", name: "last_name" },
       { data: "email", name: "email" },
       { data: "date_joined", name: "date_joined" },
       { data: "is_active", name: "is_active" },
       { data: "is_staff", name: "is_staff" },
       { data: "last_login", name: "last_login" },
-      {
-        render: function (data, type, JsonResultRow, meta) {
-          return `
-            <div class="d-flex justify-content-between">
-              <!-- Update Icon -->
-              <a href="/customadmin/user/${JsonResultRow.id}/update" class="link-dark mr-5">
-                <i style="font-size:24px" class="fa mr-5">&#xf040; </i>
-              </a>
-    
-              <!-- Delete Icon -->
-              
-              <a href="" class="link-dark" onclick="togglePopup(${JsonResultRow.id})">
-                  <i style="font-size:24px" class="fa"> &#xf1f8;</i>
-              </a>
-            </div>
-          `;
-        },
-      },
+      { data: "action", name: "action"},
     ],
-    columnDefs: [{ orderable: false, targets: [1, 6] }],
-    order: [[3, "desc"]],
+    // columnDefs: [{ orderable: false, targets: [1, 6] }],
+    order: [[0, "asc"]],
     oLanguage: {
       sSearch: "",
       oPaginate: {
@@ -53,8 +42,10 @@ $(document).ready(function () {
     },
   });
 
-  table.on("click", "tbody tr", function () {
-    location.href = `/customadmin/user/${table.row(this).data().id}`
-  });
+  // table.on("click", "tbody tr", function () {
+  //   location.href = `/customadmin/user/${table.row(this).data().id}`
+  // });
+  
+// };
 
 });

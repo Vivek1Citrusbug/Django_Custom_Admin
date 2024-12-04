@@ -1,0 +1,53 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load misc_filters %}
+{% block title %}
+    {{ opts.verbose_name_plural|capfirst }}  | Blogs
+{% endblock %}
+{% block content %}
+{%include 'includes/sidebar_header.html' %}
+
+    <div class="text-center">
+        {% include 'includes/messages.html' %}
+    </div>
+
+    
+
+    <div class="rw_inner_area rw_modal_backdrop">
+        <div class="rw_dashboard_box_wrapper">
+            <div class="admin_header agency_header mb-0">
+                <div class="dashboard_title">
+                    <h5>Total Posts :&nbsp{{count}}</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="rw_table_wrapper mt-5">
+            <div class="rw_table_inner rw_admin_user_table rw_campaigns_table">                
+                <table id="{{opts.model_name}}-table" class="table rw_pagination mt-5" >
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>title</th>
+                            <th>content</th>
+                            <th>date_published</th>
+                            <th>author_id</th>
+                            <th>action</th>
+                        </tr>                        
+                    </thead>
+                    <tbody>                    
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+    </div>
+    
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+    <script "{% static 'js/blogs_datatable.js' %}"></script>
+    {% comment %} <script src="{% static 'js/user_datatable.js' %}" ></script> {% endcomment %}
+</body>
+{% endblock %}

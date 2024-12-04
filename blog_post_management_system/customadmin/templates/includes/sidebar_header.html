@@ -29,13 +29,14 @@
                 <span>Users</span>
             </a></li>
             {% endif %}
+
+                {% comment %} POSTS  {% endcomment %}
+                <li><a href="{% url 'admin_post:list-post-admin' %}" {% if '/post' in request.path %} class="active" 
+                        {% endif %} title="posts"><img src="{% static 'images/icons/blogging.png' %}" alt="post">
+                        <span>Posts</span>
+                    </a></li>
             
-            {% comment %} POSTS  {% endcomment %}
-            {% comment %} <li><a href="{% url 'posts:list-post' %}" {% if '/post' in request.path %} class="active" 
-                {% endif %} title="posts"><img src="{% static 'images/icons/agency.svg' %}" alt="post">
-                <span>Posts</span>
-            </a></li>  {% endcomment %}
-            
+
             {% comment %} ACTIVE BREAKS {% endcomment %}
             {% comment %} {% if request.user.is_admin %} {% endcomment %}
             {% comment %} <li><a href="{% url 'activebreak:activebreak-list' %}" {% if '/break' in request.path %} class="active" 

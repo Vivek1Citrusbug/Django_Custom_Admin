@@ -11,16 +11,116 @@ from customadmin.forms.blogs_form import BlogPostForm
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.views import View
+from customadmin.mixins import HasPermissionsMixin
+from django.template.loader import get_template
+from django.db.models import Q
+from customadmin.views.generics import MyListView
 
-# class listBlogs(View,LoginRequiredMixin,ListView):
-#     """This view is used to list all the blogs"""
 
-#     model = BlogPost
-#     template_name = "blogs/blog_list.html"
-#     context_object_name = "posts"
-#     ordering = ["-date_published"]
+class listBlogs(MyListView):
+    """This view is used to list all the blogs"""
 
-#     # def blog_list_ajax(request):
+    model = BlogPost
+    template_name = "Blogs/blog_list_admin.html"
+    context_object_name = "posts"
+    ordering = ["-date_published"]
+
+    def get_queryset(self):
+        """Override queryset to add extra functionality"""
+        return self.model.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["opts"] = self.model._meta
+        context_data["count"] = self.model.objects.count()
+        return context_data
+
+
+################ AJAX view for post listing table #################
+
+class UserListAjaxView(View, HasPermissionsMixin):
+    """
+    Ajax-Pagination view for Bloglisting
+    """
+    template_name = "Blogs/blog_list_admin.html"
+    model = BlogPost
+
+    def get_queryset(self):
+        queryset = self.model.objects.all()
+        return queryset
+
+    def _get_is_superuser(self, obj):
+        """Get boolean column markup."""
+        t = get_template("core/partials/list_boolean.html")
+        return t.render({"bool_val": obj.is_superuser})
+
+    def is_orderable(self):
+        """Check if order is defined in dictionary."""
+        return True
+
+    def _get_actions(self, obj):
+        """Get actions column markup."""
+        t = get_template("partials/list_actions.html")
+        opts = self.model._meta
+        return t.render(
+            {
+                "obj": obj,
+                "opts": opts,
+                "has_change_permission": self.has_change_permission(self.request),
+                "has_delete_permission": self.has_delete_permission(self.request),
+            }
+        )
+
+    def _get_check(self, active: bool):
+        template = get_template("partials/list_boolean.html")
+        return template.render({"bool_val": active})
+
+    def prepare_results(self, qs):
+        """Prepare final result data here."""
+
+        data = []
+        
+        for post in qs:
+            print(post)
+            data.append(
+                {
+                   "id": post.id,
+                   "title":post.title,
+                   "content":post.content,
+                   "date_published":post.date_published,
+                   "author_id":post.author_id,
+                   "action":"action"
+                }
+            )
+        return data
+
+    def get(self, request, *args, **kwargs):
+        context_data = {}
+        start = int(request.GET.get("start", 0))
+        length = int(request.GET.get("length", 10))
+        draw = int(request.GET.get("draw", 1))
+        search_value = request.GET.get("search[value]", "").strip()
+        queryset = self.model.objects.all()
+        print("#######################",queryset,"##########################")
+        if search_value:
+            queryset = queryset.filter(
+                Q(title__icontains=search_value) |
+                Q(content__icontains=search_value) |
+                Q(date_published__icontains=search_value) |
+                Q(author_id__icontains=search_value)
+            )
+
+        total_records = self.model.objects.count()
+        filtered_records = queryset.count()
+        queryset = queryset[start:start + length]
+        data = self.prepare_results(queryset)
+
+        context_data["data"] = data
+        context_data["draw"] = draw
+        context_data["recordsTotal"] = total_records
+        context_data["recordsFiltered"] = filtered_records
+
+        return JsonResponse(context_data)
     
 
 
@@ -30,58 +130,3 @@ from django.views import View
 
 
 
-
-# class BlogDetailView(LoginRequiredMixin, DetailView):
-#     """This view is used to give detail of selected blog"""
-
-#     model = BlogPost
-#     template_name = "blogs/blog_detail.html"
-#     context_object_name = "post"
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         post = self.get_object()
-#         context["likes_count"] = post.likes.count()
-#         context["user_liked"] = post.likes.filter(
-#             user=self.request.user
-#         ).exists()  
-#         return context
-
-
-# class BlogCreateView(LoginRequiredMixin, CreateView):
-#     """This view is used to create new blog"""
-
-#     model = BlogPost
-#     form_class = BlogPostForm
-#     template_name = "blogs/blog_form.html"
-#     success_url = reverse_lazy("list-post-admin")
-
-#     def form_valid(self, form):
-#         form.instance.author = self.request.user
-#         return super().form_valid(form)
-
-
-# class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-#     """This view is used to update existing blog"""
-
-#     model = BlogPost
-#     form_class = BlogPostForm
-#     template_name = "blogs/blog_form.html"
-#     success_url = reverse_lazy("list-post-admin")
-
-#     def test_func(self):
-#         post = self.get_object()
-#         return post.author == self.request.user
-
-
-# class BlogPostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-#     """This view is used to delete existing blog"""
-
-#     model = BlogPost
-#     template_name = "blogs/blog_confirm_delete.html"
-#     success_url = reverse_lazy("list-post-admin")
-#     context_object_name = "post"
-
-#     def test_func(self):
-#         post = self.get_object()
-#         return post.author == self.request.user or self.request.user.is_staff
