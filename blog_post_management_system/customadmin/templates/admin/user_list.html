@@ -34,7 +34,7 @@
                 <table id="{{opts.model_name}}-table" class="table rw_pagination mt-5" >
                    <thead>
                         <tr>
-                           {% for column in  columns%}
+                           {% for column in columns %}
                             <th>{{column}}</th>
                            {% endfor %}
                         </tr>
@@ -46,7 +46,7 @@
             </div>
         </div> 
 
-        <div class="modal  rw_modal delete_popup" id="delete_confirm_popup" tabindex="-1"aria-hidden="true">
+        <div class="modal rw_modal delete_popup" id="delete_confirm_popup" tabindex="-1"aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -88,8 +88,9 @@
         var datatable_url = "{% url 'user:user-list-ajax' %}";
         function confirmDelete(id){
             $('#delete_agency').attr("href", "/customadmin/user-delete/"+id)
-            $('#delete_confirm_popup').modal('show');
-      }
+        $('#delete_confirm_popup').modal('show');
+      }  
     </script>
+    
 </body>
 {% endblock %}

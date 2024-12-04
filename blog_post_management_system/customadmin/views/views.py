@@ -62,7 +62,9 @@ class MyUserListView(MyListView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        print(context_data,"###################")
         context_data["opts"] = self.model._meta
+        print( context_data["opts"],"###################")
         context_data["count"] = self.model.objects.count()
         return context_data
 
@@ -106,13 +108,22 @@ class UserListAjaxView(View, HasPermissionsMixin):
 
     def prepare_results(self, qs):
         """Prepare final result data here."""
-    
+        company_instances = UserProfile.objects.all().values_list("pk", "bio", "profile_picture", "user_id")
+        company_name_dict = {str(x[3]): [x[0], x[1], x[2]] for x in company_instances}
+        
+
         data = []
+        
         for user in qs:
+            profile_picture = company_name_dict.get(str(user.id), [None, None, None])[2]
+            if profile_picture:
+                profile_picture = "/images/"+profile_picture
+
             data.append(
                 {
                     "id": user.id,
-                    "username": user.username,
+                    "profile_picture":profile_picture,
+                    "username": [user.username],
                     "email": user.email,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
@@ -146,7 +157,7 @@ class UserListAjaxView(View, HasPermissionsMixin):
         queryset = queryset[start:start + length]
         data = self.prepare_results(queryset)
 
-        # Build the response
+        # return context
         context_data["data"] = data
         context_data["columns"] = list(data[0].keys()) if data else []
         context_data["draw"] = draw
@@ -169,6 +180,7 @@ class MyUserDeleteView(View):
         try:
             user = User.objects.get(id=pk)
             user.delete()
+            print("Inside delete view #########################")
             # delete_user_task.delay(user_id=pk)
             messages.success(self.request, f"User deleted.")
             return HttpResponseRedirect(reverse("user:user-list"))
