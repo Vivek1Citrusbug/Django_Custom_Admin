@@ -33,11 +33,27 @@
             <div class="rw_table_inner rw_admin_user_table rw_campaigns_table">                
                 <table id="{{opts.model_name}}-table" class="table rw_pagination mt-5" >
                    <thead>
-                        <tr>
+                    <tr>
+                        <th>id</th>
+                        <th>profile_picture</th>
+                        <th>username</th>
+                        <th>email</th>
+                        <th>first_name</th>
+                        <th>last_name</th>
+                        <th>is_active</th>
+                        <th>is_staff</th>
+                        <th>last_login</th>
+                        <th>date_joined</th>
+                        <th>action</th>
+                    </tr>
+                        
+                
+                        {% comment %} <tr>
                            {% for column in columns %}
                             <th>{{column}}</th>
                            {% endfor %}
-                        </tr>
+                        </tr> {% endcomment %}
+                        
                     </thead>
                     <tbody>                    
                         
