@@ -21,7 +21,10 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout,login
 from accounts.models import UserProfile
-        
+from django.views.generic import DetailView, UpdateView
+from customadmin.forms.users import UserProfileForm
+from django.urls import reverse_lazy
+
 class MyLoginView(LoginView):
     template_name = "admin/admin_login.html"
     form_class = LoginForm
@@ -183,16 +186,64 @@ class MyUserDeleteView(View):
         return super(self.__class__, self).dispatch(request, *args, **kwargs)
     
 class UpdateUserView(MyUpdateView):
+
     model = User
     form_class = UpdateUserForm
-    template_name = "admin/user_update.html"
+    template_name = 'admin/user_update.html'
+    success_url = reverse_lazy('user:user-list') 
 
-    def get_initial(self) -> dict:
-        initial = super().get_initial()
-        return initial
+    def get_object(self):
+        user = super().get_object()
+        user_profile, created = UserProfile.objects.get_or_create(user=user)
+        user.profile = user_profile
+        return user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile_form'] = UserProfileForm(instance=self.object.profile)
+        return context
+
+    def form_valid(self, form):
+        user_form = form.save(commit=False)
+        user_form.save()
+        profile_form = UserProfileForm(self.request.POST, self.request.FILES, instance=self.object.profile)
+        if profile_form.is_valid():
+            profile_form.save()
+        return redirect(self.success_url)
+
     
+
+
+
+
 class UserProfileView(MyUpdateView):
     model = User
     template_name = "admin/user_detail.html"
-    # form_class = UpdateUserForm
     fields = ['username','first_name', 'last_name', 'email']
+
+
+# class ProfileDetailView(LoginRequiredMixin, DetailView):
+#     """This view is used for listing profile details"""
+
+#     model = UserProfile
+#     template_name = "admin/user_detail.html"
+#     context_object_name = "profile"
+
+#     def get_object(self):
+#         profile, created = UserProfile.objects.get_or_create(user=self.request.user)
+#         return profile
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    """This view is used for profile update"""
+
+    model = UserProfile
+    form_class = UserProfileForm
+    template_name = "accounts/edit_profile.html"
+
+    def get_success_url(self):
+        return reverse_lazy("profile")
+
+    def get_object(self):
+        profile, created = UserProfile.objects.get_or_create(user=self.request.user)
+        return profile

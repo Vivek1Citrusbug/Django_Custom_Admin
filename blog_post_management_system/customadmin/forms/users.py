@@ -7,6 +7,7 @@ from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.forms.widgets import PasswordInput, TextInput
+from accounts.models import UserProfile
 
 USER_NAME_REGEX = r'^[a-zA-Z0-9_-]{3,20}$'
 EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -91,6 +92,22 @@ class UpdateUserForm(ModelForm):
             "last_name",
         ]
 
+    def clean(self) -> Dict[str, Any]:
+        cleaned_data = super().clean()
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit:
+            instance.save()
+        return instance
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ["bio", "profile_picture"]
+    
     def clean(self) -> Dict[str, Any]:
         cleaned_data = super().clean()
         return cleaned_data
