@@ -49,5 +49,8 @@
     <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
     <script "{% static 'js/blogs_datatable.js' %}"></script>
     {% comment %} <script src="{% static 'js/user_datatable.js' %}" ></script> {% endcomment %}
+    <script type="text/javascript">
+        var datatable_url = "{% url 'admin_post:list-post-ajax-view' %}";
+    </script>
 </body>
 {% endblock %}

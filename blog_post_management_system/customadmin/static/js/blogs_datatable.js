@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    let table = $("#BlogPost-table").DataTable({
+    let table = $("#blogs.blogpost-table").DataTable({
       paging: true,
       responsive: true,
       pageLength: 10,

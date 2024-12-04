@@ -32,6 +32,7 @@ class listBlogs(MyListView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["opts"] = self.model._meta
+        print(context_data["opts"])
         context_data["count"] = self.model.objects.count()
         return context_data
 
@@ -79,7 +80,7 @@ class UserListAjaxView(View, HasPermissionsMixin):
         """Prepare final result data here."""
 
         data = []
-        
+        print("Query set in prepare results : ",qs)
         for post in qs:
             print(post)
             data.append(
@@ -101,7 +102,9 @@ class UserListAjaxView(View, HasPermissionsMixin):
         draw = int(request.GET.get("draw", 1))
         search_value = request.GET.get("search[value]", "").strip()
         queryset = self.model.objects.all()
+        
         print("#######################",queryset,"##########################")
+        
         if search_value:
             queryset = queryset.filter(
                 Q(title__icontains=search_value) |
