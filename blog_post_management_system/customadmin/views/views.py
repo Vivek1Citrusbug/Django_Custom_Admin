@@ -101,19 +101,6 @@ class UserListAjaxView(View, HasPermissionsMixin):
         template = get_template("partials/list_boolean.html")
         return template.render({"bool_val": active})
 
-    def filter_queryset(self, qs):
-        """Return the list of items for this view."""
-        # If a search term, filter the query
-        
-        if self.search:
-            return qs.filter(
-                Q(email__icontains=self.search)
-                | Q(first_name__icontains=self.search)
-                | Q(username__icontains=self.search)
-                | Q(last_name__icontains=self.search),
-            )
-        return qs
-
     def prepare_results(self, qs):
         """Prepare final result data here."""
     
@@ -134,17 +121,35 @@ class UserListAjaxView(View, HasPermissionsMixin):
                 }
             )
         return data
-    
+
     def get(self, request, *args, **kwargs):
-       
         context_data = {}
         start = int(request.GET.get("start", 0))
         length = int(request.GET.get("length", 10))
-        queryset = self.get_queryset()[start:start + length]
+        draw = int(request.GET.get("draw", 1))
+        search_value = request.GET.get("search[value]", "").strip()
+        queryset = self.model.objects.exclude(id=request.user.id)
+
+        if search_value:
+            queryset = queryset.filter(
+                Q(username__icontains=search_value) |
+                Q(first_name__icontains=search_value) |
+                Q(last_name__icontains=search_value) |
+                Q(email__icontains=search_value)
+            )
+
+        total_records = self.model.objects.exclude(id=request.user.id).count()
+        filtered_records = queryset.count()
+        queryset = queryset[start:start + length]
         data = self.prepare_results(queryset)
+
+        # Build the response
         context_data["data"] = data
         context_data["columns"] = list(data[0].keys()) if data else []
-        print(context_data["columns"])
+        context_data["draw"] = draw
+        context_data["recordsTotal"] = total_records
+        context_data["recordsFiltered"] = filtered_records
+
         return JsonResponse(context_data)
     
 

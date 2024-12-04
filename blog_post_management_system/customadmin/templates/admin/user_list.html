@@ -32,7 +32,7 @@
         <div class="rw_table_wrapper mt-5">
             <div class="rw_table_inner rw_admin_user_table rw_campaigns_table">                
                 <table id="{{opts.model_name}}-table" class="table rw_pagination mt-5" >
-                    <thead>
+                   <thead>
                         {% comment %} <tr>
                             <th>Id</th>
                             <th>Username</th>
@@ -46,8 +46,9 @@
                             <th>Action</th>
                         </tr>  {% endcomment %}
                         <tr>
-                        
-                            {{columns}}
+                           {% for column in  columns%}
+                            <th>{{column}}</th>
+                           {% endfor %}
                         </tr>
                     </thead>
                     <tbody>                    
@@ -99,7 +100,7 @@
         var datatable_url = "{% url 'user:user-list-ajax' %}";
         function confirmDelete(id){
             $('#delete_agency').attr("href", "/customadmin/user-delete/"+id)
-        $('#delete_confirm_popup').modal('show');
+            $('#delete_confirm_popup').modal('show');
       }
     </script>
 </body>
