@@ -10,16 +10,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from customadmin.forms.blogs_form import BlogPostForm
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
+from django.views import View
 
-class listBlogs(LoginRequiredMixin,ListView):
-    """This view is used to list all the blogs"""
+# class listBlogs(View,LoginRequiredMixin,ListView):
+#     """This view is used to list all the blogs"""
 
-    model = BlogPost
-    template_name = "blogs/blog_list.html"
-    context_object_name = "posts"
-    ordering = ["-date_published"]
+#     model = BlogPost
+#     template_name = "blogs/blog_list.html"
+#     context_object_name = "posts"
+#     ordering = ["-date_published"]
 
-    def blog_list_ajax(request):
+#     # def blog_list_ajax(request):
     
 
 

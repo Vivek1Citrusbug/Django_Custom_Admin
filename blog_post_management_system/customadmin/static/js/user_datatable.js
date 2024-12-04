@@ -34,7 +34,7 @@ $(document).ready(function () {
     
               <!-- Delete Icon -->
               
-              <a href="/customadmin/user-delete/${JsonResultRow.id}/" class="link-dark" onclick="togglePopup(${JsonResultRow.id})">
+              <a href="" class="link-dark" onclick="togglePopup(${JsonResultRow.id})">
                   <i style="font-size:24px" class="fa"> &#xf1f8;</i>
               </a>
             </div>
