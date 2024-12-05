@@ -1,9 +1,9 @@
 $(document).ready(function () {
-    let table = $("#BlogPost-table").DataTable({
+    let table = $("#blogpost-table").DataTable({
       paging: true,
       responsive: true,
       pageLength: 10,
-      autoWidth: false,
+      autoWidth: true,
       lengthMenu: [10, 25, 50, 100],
       searching: true,
       processing: true,
@@ -21,7 +21,16 @@ $(document).ready(function () {
         { data: "author_id", name: "author_id" },
         { data: "action", name: "action" },
       ],
-      // columnDefs: [{ orderable: false, targets: [1, 6] }],
+      columnDefs: [
+        {
+            target: 0,
+            visible: false,
+        },
+        {
+            target: 2,
+            visible: false
+        }
+    ],
       order: [[0, "asc"]],
       oLanguage: {
         sSearch: "",
@@ -30,11 +39,12 @@ $(document).ready(function () {
           sPrevious: `<a href="#" aria-controls="user-table" data-dt-idx="0" tabindex="0" class="page-link"><</a>`,
         },
       },
+      
     });
-  
-    // table.on("click", "tbody tr", function () {
-    //   location.href = `/customadmin/user/${table.row(this).data().id}`
-    // });
+    
+    table.on("click", "tbody tr", function () {
+    location.href = `/customadmin/posts/${table.row(this).data().id}`
+  });
     
   // };
   

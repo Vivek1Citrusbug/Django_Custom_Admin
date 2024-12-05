@@ -43,7 +43,7 @@ class MyLoginView(LoginView):
             login(self.request, user)  
             return super().form_valid(form)  
         else:
-            form.add_error(None, "You must be a superuser to access this panel.")
+            form.add_error(None, "Please enter a correct username and password.")
             return self.form_invalid(form)
 
 

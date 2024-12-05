@@ -23,7 +23,8 @@
         </div>
         <ul>
             {% comment %} USERS  {% endcomment %}
-            {% if request.user.is_admin %}
+            {% if request.user.is_superuser %}
+            
             <li><a href="{% url 'user:user-list' %}" {% if '/user' in request.path %} class="active" 
                 {% endif %} title="Users"><img src="{% static 'images/icons/group.svg' %}" alt="user">
                 <span>Users</span>
@@ -31,10 +32,10 @@
             {% endif %}
 
                 {% comment %} POSTS  {% endcomment %}
-                <li><a href="{% url 'admin_post:list-post-admin' %}" {% if '/post' in request.path %} class="active" 
-                        {% endif %} title="posts"><img src="{% static 'images/icons/blogging.png' %}" alt="post">
-                        <span>Posts</span>
-                    </a></li>
+            <li><a href="{% url 'admin_post:list-post-admin' %}" {% if '/post' in request.path %} class="active" 
+                {% endif %} title="posts"><img src="{% static 'images/icons/dashboard.svg' %}" alt="post">
+                <span>Posts</span>
+            </a></li>
             
 
             {% comment %} ACTIVE BREAKS {% endcomment %}

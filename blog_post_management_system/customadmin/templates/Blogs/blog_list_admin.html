@@ -20,18 +20,25 @@
                     <h5>Total Posts :&nbsp{{count}}</h5>
                 </div>
             </div>
+            <div class="admin_user_select"> 
+                <div class="search_icon_wrapper">
+                     <div class="rw_dashboard_btn">
+                        <a href="{% url 'admin_post:blogpost-create' %}" class="rw_btn">Add Blog</a>
+                     </div>
+                </div>
+            </div> 
         </div>
 
         <div class="rw_table_wrapper mt-5">
-            <div class="rw_table_inner rw_admin_user_table rw_campaigns_table">                
+            <div class="rw_table_inner rw_admin_user_table rw_campaigns_table">            
                 <table id="{{opts.model_name}}-table" class="table rw_pagination mt-5" >
                     <thead>
                         <tr>
                             <th>id</th>
                             <th>title</th>
                             <th>content</th>
-                            <th>date_published</th>
-                            <th>author_id</th>
+                            <th>Date published</th>
+                            <th>author</th>
                             <th>action</th>
                         </tr>                        
                     </thead>
@@ -41,13 +48,52 @@
                 </table>
             </div>
         </div> 
+
+        <div class="modal rw_modal delete_popup" id="delete_confirm_popup" tabindex="-1"aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal_title">
+                            <h4>Delete {{opts.verbose_name}}</h4>
+                        </div>
+
+                        <a href="javascript:;" class="popup_close" data-bs-dismiss="modal"
+                            aria-label="Close"><img src="{% static 'images/icons/close.svg' %}"
+                                alt="close"></a>
+                    </div>
+                    <div class="modal-body">
+                        <div class="delete_modal_body">
+                            <img src="{% static 'images/delete_popup.svg' %}" alt="">
+                            <h1>Delete {{opts.verbose_name}} </h1>
+                            <p>Are you sure you want to delete ? </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <ul class="modal_btns">
+                            <li><a href="javascript:;" class="modal_btn cancel"
+                                    data-bs-dismiss="modal">no</a></li>
+                            <li><a href="" id="delete_agency" class="modal_btn">Yes</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
-    <script "{% static 'js/blogs_datatable.js' %}"></script>
+    <script src="{% static 'js/blogs_datatable.js' %}"></script>
     {% comment %} <script src="{% static 'js/user_datatable.js' %}" ></script> {% endcomment %}
+    
+    <script type="text/javascript">
+        var datatable_url = "{% url 'admin_post:list-post-ajax-view' %}";
+        function confirmDelete(id){
+            $('#delete_agency').attr("href", "/customadmin/posts/delete/"+id)
+        $('#delete_confirm_popup').modal('show');
+      }  
+    </script>
 </body>
 {% endblock %}

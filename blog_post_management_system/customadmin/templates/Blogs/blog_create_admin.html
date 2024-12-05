@@ -1,0 +1,64 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load misc_filters %}
+{% block title %}
+    {{ opts.verbose_name_plural|capfirst }}  | Blogs Create
+{% endblock %}
+{% block content %}
+{%include 'includes/sidebar_header.html' %}
+
+    <div class="text-center">
+        {% include 'includes/messages.html' %}
+    </div>
+
+    
+    <div class="container">
+    
+        <div class="mt-5">
+            <a class="link-danger back-link" href="{% url 'admin_post:list-post-admin' %}">
+            <i class="fa fa-arrow-left">&nbsp; Back</i>
+            </a>
+        </div>
+
+        <div class="rw_inner_form_inner_area container">
+            <div class="rw_inn_form_box">
+            <form method="POST" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+        
+                <div class="row mt-5">
+                    <!-- Blog Fields (Title, Content) -->
+                    {% for f in form %}
+                        {% if not f.name == "image" %}
+                        <div class="col-lg-6 col-md-6">
+                            <div class="rw_form_inputs">
+                            <label class="rw_form_label">{{ f.label }}</label>
+                            <div class="rw_input">
+                                {{ f }}
+                                <span class="text-danger">{{ f.errors }}</span>
+                                <span class="input_icon business"></span>
+                            </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+        
+                <!-- Save Button -->
+                <div class="rw_save_btn">
+                    <button type="submit" class="rw_btn">Save</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    
+    </div>
+
+
+    
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'js/blogs_datatable.js' %}" ></script>
+</body>
+{% endblock %}
