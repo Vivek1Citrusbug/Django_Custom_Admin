@@ -21,17 +21,7 @@ $(document).ready(function () {
         { data: "author_id", name: "author_id" },
         { data: "action", name: "action" },
       ],
-      columnDefs: [
-        {
-            target: 0,
-            visible: false,
-        },
-        {
-            target: 2,
-            visible: false
-        }
-    ],
-      order: [[0, "asc"]],
+      
       oLanguage: {
         sSearch: "",
         oPaginate: {
@@ -41,7 +31,10 @@ $(document).ready(function () {
       },
       
     });
-    
+
+    table.columns([0, 2]).visible(false);
+    table.order([3, 'desc']).draw();
+
     table.on("click", "tbody tr", function () {
     location.href = `/customadmin/posts/${table.row(this).data().id}`
   });
