@@ -11,8 +11,8 @@ register = template.Library()
 def admin_urlname(value, arg):
     if value.model_name == "user":
         pattern = "%s:%s-%s" % ("user", "user", arg)
-    elif value.model_name == "BlogPost":
-        pattern = "%s:%s-%s" % ("blogpost", "blogpost", arg)
+    elif value.model_name == "blogpost":
+        pattern = "%s:%s-%s" % ("admin_post", "blogpost", arg)
     # elif value.model_name == "activebreak":
     #     pattern = "%s:%s-%s" % ("activebreak", "activebreak", arg)
     # elif value.model_name == "activitylevel":

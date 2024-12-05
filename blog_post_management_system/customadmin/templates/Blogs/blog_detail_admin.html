@@ -1,0 +1,116 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load misc_filters %}
+{% block title %}
+    {{ opts.verbose_name_plural|capfirst }}  | Blogs
+{% endblock %}
+{% block content %}
+{%include 'includes/sidebar_header.html' %}
+
+    <div class="text-center">
+        {% include 'includes/messages.html' %}
+    </div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-md-18">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <!-- Post Title -->
+                        <h1 class="card-title  mb-3">{{ object.title }}</h1>
+                        <!-- Post Content -->
+                        <p class="card-text text-justify">{{ object.content }}</p>
+                        <span class="me-3 float-right"><strong> Likes</strong>: {{ likes }}</span>
+                        <form action="{% url 'admin_post:comment-create' blog_id %}" method="post">
+                            <div class="input-group my-3">
+                                <input type="text" class="form-control" placeholder="Enter comment" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                  <button class="btn btn-info" type="button">Save</button>
+                                </div>
+                              </div>
+                        </form>
+                        <br>
+                        <br>
+                        <!-- Author and Date -->
+                        <p class="card-text text-muted">
+                            <span><small>By <strong>{{ object.author }}</strong> | Published on {{ object.date_published }}</small></span>
+                        </p>
+                        <hr>
+
+                        <div class="row justify-content-center">
+                            <div class="col-lg-12 col-md-10 col-sm-12">
+                                <div class="card shadow-sm mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Comments : </h5>
+                                        <!-- Iterate through comments -->
+                                        {% for comment in comments %}
+                                            <div class="d-flex justify-content-between align-items-center my-3">
+                                                <p><strong>{{ comment.user_id.username }}</strong> : {{ comment.content }}</p>
+                                                
+                                                <!-- Delete Button -->
+                                                
+                                                    <form action="{% url 'admin_post:comment-delete' comment.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <button class="btn btn-danger btn-sm" type="submit">
+                                                            <i class="bi bi-trash"></i> Delete
+                                                        </button>
+                                                    </form>  
+                                            </div>
+                                        {% empty %}
+                                            <p>No comments yet.</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal rw_modal delete_popup" id="delete_confirm_popup" tabindex="-1"aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal_title">
+                        <h4>Delete {{opts.verbose_name}}</h4>
+                    </div>
+
+                    <a href="javascript:;" class="popup_close" data-bs-dismiss="modal"
+                        aria-label="Close"><img src="{% static 'images/icons/close.svg' %}"
+                            alt="close"></a>
+                </div>
+                <div class="modal-body">
+                    <div class="delete_modal_body">
+                        <img src="{% static 'images/delete_popup.svg' %}" alt="">
+                        <h1>Delete {{opts.verbose_name}} </h1>
+                        <p>Are you sure you want to delete ? </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <ul class="modal_btns">
+                        <li><a href="javascript:;" class="modal_btn cancel"
+                                data-bs-dismiss="modal">no</a></li>
+                        <li><a href="" id="delete_agency" class="modal_btn">Yes</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'js/user_datatable.js' %}" ></script>
+    <script type="text/javascript">
+        var datatable_url = "{% url 'admin_post:list-post-ajax-view' %}";
+        function confirmDelete(id){
+            $('#delete_agency').attr("href", "delete_comment/<pk>/"+id)
+        $('#delete_confirm_popup').modal('show');
+      }  
+    </script>
+</body>
+{% endblock %}

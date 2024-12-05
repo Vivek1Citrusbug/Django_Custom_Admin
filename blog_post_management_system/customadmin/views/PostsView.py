@@ -9,13 +9,20 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from customadmin.forms.blogs_form import BlogPostForm
 from django.urls import reverse_lazy
-from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect,JsonResponse
 from django.views import View
 from customadmin.mixins import HasPermissionsMixin
 from django.template.loader import get_template
 from django.db.models import Q
-from customadmin.views.generics import MyListView
-
+from customadmin.views.generics import MyCreateView, MyListView
+from customadmin.forms.blogs_form import BlogPostForm
+from django.contrib import messages
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from likes.models import Like
+from comments.models import UserComments
+from django.contrib.auth.models import User
 
 class listBlogs(MyListView):
     """This view is used to list all the blogs"""
@@ -38,7 +45,7 @@ class listBlogs(MyListView):
 
 ################ AJAX view for post listing table #################
 
-class UserListAjaxView(View, HasPermissionsMixin):
+class BlogListAjaxView(View, HasPermissionsMixin):
     """
     Ajax-Pagination view for Bloglisting
     """
@@ -82,14 +89,17 @@ class UserListAjaxView(View, HasPermissionsMixin):
         
         for post in qs:
             print(post)
+            current_user = User.objects.get(id=post.author_id)
+            print("Current user : ############",current_user,post.author_id)
+            
             data.append(
                 {
                    "id": post.id,
                    "title":post.title,
                    "content":post.content,
                    "date_published":post.date_published,
-                   "author_id":post.author_id,
-                   "action":"action"
+                   "author_id":current_user.username,
+                   "action":self._get_actions(post)
                 }
             )
         return data
@@ -101,14 +111,14 @@ class UserListAjaxView(View, HasPermissionsMixin):
         draw = int(request.GET.get("draw", 1))
         search_value = request.GET.get("search[value]", "").strip()
         queryset = self.model.objects.all()
-        print("#######################",queryset,"##########################")
-        if search_value:
-            queryset = queryset.filter(
-                Q(title__icontains=search_value) |
-                Q(content__icontains=search_value) |
-                Q(date_published__icontains=search_value) |
-                Q(author_id__icontains=search_value)
-            )
+
+        # if search_value:
+        #     queryset = queryset.filter(
+        #         Q(title__icontains=search_value) |
+        #         Q(content__icontains=search_value) |
+        #         Q(date_published__icontains=search_value) |
+        #         Q(author_id__icontains=search_value)
+        #     )
 
         total_records = self.model.objects.count()
         filtered_records = queryset.count()
@@ -123,10 +133,106 @@ class UserListAjaxView(View, HasPermissionsMixin):
         return JsonResponse(context_data)
     
 
+class UpdatePostView(UpdateView,View):
+    model = BlogPost
+    form_class = BlogPostForm
+    template_name = 'Blogs/blog_update_admin.html'
+    success_url = reverse_lazy('admin_post:list-post-admin') 
+
+
+class CreateBlogView(CreateView):
+    model = BlogPost
+    form_class = BlogPostForm
+    template_name = "Blogs/blog_create_admin.html"
+    success_url = reverse_lazy('admin_post:list-post-admin') 
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+class DeleteBlogView(DeleteView):
+    """This view is used to delete existing blog"""
+
+    def get(self, request, pk):
+        try:
+            current_blog = BlogPost.objects.get(id=pk)
+            current_blog.delete()
+            messages.success(self.request, f"Blog deleted.")
+            return HttpResponseRedirect(reverse("admin_post:list-post-admin"))
+        except current_blog.DoesNotExist:
+            return HttpResponse("Given post does not exist!")
+
+
+class BlogDetailView(DetailView):
+    """This view is used to show selected blog"""
+
+    template_name = "Blogs/blog_detail_admin.html"
+    model = BlogPost
+    fields = ['id','title','content', 'author', 'date_published','likes_count']
+
+    def get_object(self):
+        blog_post = super().get_object()
+        return blog_post
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        blog_post = self.get_object()
+        likes = Like.objects.filter(post_id=blog_post).count()
+
+        context['likes'] = likes
+        context['blog_id'] = blog_post.id
+        comments = UserComments.objects.filter(post_id=blog_post)
+        context['comments'] = comments
+        return context
+
+    def get(self, request, pk, *args, **kwargs):
+        return super().get(request, pk, *args, **kwargs)
+
+
+class DeleteCommentView(DeleteView):
+    """This view is used to delete existing comments"""
+    model = UserComments
+
+    def get_success_url(self):
+        """Redirect to the blog post detail page after successful deletion"""
+        return reverse("admin_post:blogpost-detail", kwargs={"pk": self.object.post_id_id})
+    
+    def get(self, request, pk):
+        try:
+            current_comment = self.model.objects.get(id=pk)
+            current_comment.delete()
+            messages.success(self.request, f"Comment deleted.")
+            return HttpResponseRedirect(reverse("admin_post:blogpost-detail"), kwargs={"pk": current_comment.post_id})
+        except current_comment.DoesNotExist:
+            return HttpResponse("Given comment does not exist!")
+        
+class CreateCommentView(CreateView):
+    
+    model = BlogPost
+
+    def form_valid(self, form):
+        form.instance.post_id = BlogPost.objects.get(pk=self.kwargs["blog_id"])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("list_comment", kwargs={"pk": self.kwargs["pk"]})
+    
+    def get(self, request, pk):
+        try:
+            current_comment = UserComments.objects.get(id=pk)
+            current_comment.delete()
+            messages.success(self.request, f"Comment deleted.")
+            return HttpResponseRedirect(reverse("admin_post:blogpost-detail"), kwargs={"pk": current_comment.post_id})
+        except current_comment.DoesNotExist:
+            return HttpResponse("Given comment does not exist!")
+
+        
 
 
 
 
+    
 
 
 

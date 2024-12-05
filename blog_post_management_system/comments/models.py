@@ -14,5 +14,5 @@ class UserComments(models.Model):
     content = models.CharField(max_length=257)
     date_posted = models.DateField(default=timezone.now)
 
-    def __str__(self):
-        return f"Comment by {self.user_id} on {self.post_id}"
+    # def __str__(self):
+    #     return f"Comment by {self.user_id} on {self.post_id}"
