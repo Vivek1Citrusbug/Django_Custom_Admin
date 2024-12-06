@@ -76,14 +76,30 @@ class MyUserListView(MyListView):
     def get_queryset(self):
         """Override queryset to add extra functionality"""
         return self.model.objects.filter(is_superuser=False)
+    
+    def get_columns(self):
+        """Columns to pass for templates"""
+
+        return [
+                "Id",
+                "Profile",
+                "Username" ,
+                "First Name",
+                "Last Name",
+                "Email",
+                "Date Joined",
+                "Active",
+                "Staff",                   
+                "Last Login",
+                "action"
+            ] 
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        print(context_data, "###################")
+        print("Super class context data", context_data)
         context_data["opts"] = self.model._meta
-        print(context_data["opts"], "###################")
         context_data["count"] = self.model.objects.count()
-
+        context_data["columns"] = self.get_columns()
         return context_data
 
 
@@ -183,7 +199,7 @@ class UserListAjaxView(View, HasPermissionsMixin):
 
         # return context
         context_data["data"] = data
-        # context_data["columns"] = list(data[0].keys()) if data else []
+        context_data["columns_selected"] = list(data[0].keys()) if data else []
         context_data["draw"] = draw
         context_data["recordsTotal"] = total_records
         context_data["recordsFiltered"] = filtered_records

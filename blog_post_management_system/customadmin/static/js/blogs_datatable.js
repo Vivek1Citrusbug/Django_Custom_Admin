@@ -34,7 +34,6 @@ $(document).ready(function () {
 
     table.columns([0, 2]).visible(false);
     table.order([3, 'desc']).draw();
-   
 
     table.on("click", "tbody tr", function () {
     location.href = `/customadmin/posts/${table.row(this).data().id}`
