@@ -1,0 +1,9 @@
+.rw_modal.campaign_modal .modal-dialog{
+  max-width: 429px;
+}
+.rw_modal.campaign_modal .modal-body{
+  padding:0px;
+}
+.rw_modal.campaign_modal .campaigns_action_content .campaigns_box{
+    max-width: 429px;
+}

@@ -1,0 +1,216 @@
+/* -------------------------------- 
+
+Primary style
+
+-------------------------------- */
+
+a {
+  color: #ed7844;
+  text-decoration: none;
+}
+
+section h2 {
+  width: 90%;
+  margin: 0 auto 2em;
+  color: #3b4860;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+}
+@media only screen and (min-width: 1170px) {
+  section {
+    padding: 0em 0;
+  }
+  section h2 {
+    margin: 0 auto 3em;
+  }
+}
+
+header {
+  background: #3b4860;
+  position: relative;
+}
+header h1 {
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+  padding: 4em 0;
+  color: #ffffff;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+  font-size: 2rem;
+}
+@media only screen and (min-width: 768px) {
+  header h1 {
+    font-size: 3rem;
+  }
+}
+
+/* -------------------------------- 
+  
+  Basic Style
+  
+  -------------------------------- */
+.cd-breadcrumb,
+.cd-multi-steps {
+  display: flex;
+  width: 100%;
+  max-width: 768px;
+  padding: 0.5em 1em;
+  margin: 1em auto;
+  background-color: #edeff0;
+  border-radius: 0.25em;
+}
+.cd-breadcrumb::after,
+.cd-multi-steps::after {
+  clear: both;
+  content: "";
+  display: table;
+}
+.cd-breadcrumb li,
+.cd-multi-steps li {
+  display: inline-block;
+  float: left;
+  margin: 0.5em 0;
+  font-weight: 500;
+}
+.cd-breadcrumb li::after,
+.cd-multi-steps li::after {
+  /* this is the separator between items */
+  display: inline-block;
+  content: "\00bb";
+  margin: 0 0.6em;
+  color: #959fa5;
+}
+.cd-breadcrumb li:last-of-type::after,
+.cd-multi-steps li:last-of-type::after {
+  /* hide separator after the last item */
+  display: none;
+}
+.cd-breadcrumb li > *,
+.cd-multi-steps li > * {
+  /* single step */
+  display: inline-block;
+  font-size: 15px;
+  color: #3b4860;
+}
+.cd-breadcrumb li.current > *,
+.cd-multi-steps li.current > * {
+  /* selected step */
+  color: #ed7844;
+}
+.cd-breadcrumb.custom-separator li::after,
+.cd-multi-steps.custom-separator li::after {
+  /* replace the default separator with a custom icon */
+  content: "";
+  height: 16px;
+  width: 16px;
+  background: url(https://codyhouse.co/demo/breadcrumbs-multi-steps-indicator/img/cd-custom-separator.svg)
+    no-repeat center center;
+  vertical-align: middle;
+}
+.cd-breadcrumb.custom-icons li:not(.current):nth-of-type(2) > *::before,
+.cd-multi-steps.custom-icons li:not(.current):nth-of-type(2) > *::before {
+  /* change custom icon using image sprites */
+  background-position: -20px 0;
+}
+.cd-breadcrumb.custom-icons li:not(.current):nth-of-type(3) > *::before,
+.cd-multi-steps.custom-icons li:not(.current):nth-of-type(3) > *::before {
+  background-position: -40px 0;
+}
+.cd-breadcrumb.custom-icons li:not(.current):nth-of-type(4) > *::before,
+.cd-multi-steps.custom-icons li:not(.current):nth-of-type(4) > *::before {
+  background-position: -60px 0;
+}
+.cd-breadcrumb.custom-icons li.current:first-of-type > *::before,
+.cd-multi-steps.custom-icons li.current:first-of-type > *::before {
+  /* change custom icon for the current item */
+  background-position: 0 -20px;
+}
+.cd-breadcrumb.custom-icons li.current:nth-of-type(2) > *::before,
+.cd-multi-steps.custom-icons li.current:nth-of-type(2) > *::before {
+  background-position: -20px -20px;
+}
+.cd-breadcrumb.custom-icons li.current:nth-of-type(3) > *::before,
+.cd-multi-steps.custom-icons li.current:nth-of-type(3) > *::before {
+  background-position: -40px -20px;
+}
+.cd-breadcrumb.custom-icons li.current:nth-of-type(4) > *::before,
+.cd-multi-steps.custom-icons li.current:nth-of-type(4) > *::before {
+  background-position: -60px -20px;
+}
+.btn-outline-danger:hover {
+  color: #fff;
+  background-color: #ed7844 !important;
+  border-color: #ed7844 !important;
+
+}
+.btn-outline-danger {
+  color: #fff;
+  border-color: #ed7844 !important;
+}
+.button-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 10px;
+}
+.button-flex.custom-button-flex .rw_btn {
+  font-size: 14px;
+  width: fit-content;
+  text-transform: capitalize;
+  font-weight: normal;
+  height: 40px;
+}
+.button-flex.custom-button-flex .rw_btn:focus , .rw_btn:focus {
+  box-shadow: unset;
+}
+.button-flex.custom-button-flex {
+  justify-content: flex-start;
+}
+.form-check-input:focus {
+  border-color: #ed7844 !important;
+}
+.form-check-input:checked {
+  background-color: #ed7844 !important;
+  border-color: #ed7844 !important;
+}
+.logout-btn {
+  border-radius: 12px !important;
+  height: 40px !important;
+  padding: 14px 16px !important;
+}
+@media only screen and (min-width: 768px) {
+  .cd-breadcrumb,
+  .cd-multi-steps {
+    padding: 0 1.2em;
+  }
+  .cd-breadcrumb li::after,
+  .cd-multi-steps li::after {
+    margin: 0 1em;
+  }
+  .cd-breadcrumb li > *,
+  .cd-multi-steps li > * {
+    font-size: 15px;
+    vertical-align: middle;
+  }
+}
+@media screen and (max-width: 991px) {
+  .focus-create-page .back-custom-link {
+    position: unset;
+    margin-bottom: 10px;
+  }
+  .main-dashboard-page {
+    flex-wrap: wrap;
+    gap: 10px;
+}
+}
+
+@media screen and (max-width: 575px) {
+.button-flex-div {
+  flex-flow: column !important;
+  align-items: flex-start !important;
+}
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="icon" href="{% static 'images/favicon.svg' %}" />
+    <title>
+      {% block title %}{{ opts.verbose_name_plural|capfirst }}{% endblock%}
+    </title>
+    <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/datatables.min.css' %}" />
+    <link rel="stylesheet" href="{% static '/fonts/graphik_font.css' %}" />
+    {% comment %} <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css"> {% endcomment %}
+    <link
+      rel="stylesheet"
+      href="{% static '/css/dataTables.bootstrap5.min.css' %}"
+    />
+    <link rel="stylesheet" href="{% static '/css/dashboard.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/admin_user.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/campaigns.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/client_contact.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/cropper.css' %}" />
+
+    {%block head%} {%endblock%}
+  </head>
+  {% block content %} {% endblock %}
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+  <script src="{% static 'js/cropper.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+  <script src="{% static 'js/helpers.js' %}"></script>
+  <!-- <script src="{% static 'js/custom.js' %}"></script> -->
+</html>

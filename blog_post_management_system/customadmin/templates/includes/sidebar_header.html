@@ -1,0 +1,50 @@
+{% load static %}
+{% load misc_filters %}
+<header class="rw_header_wrapper">
+    <div class="rw_header_inner">
+        {% breadcrumb_trail request %}
+        <div class="header_profile dropdown">
+            <div class="header_title">
+                <h3>Hello, {{request.user.username}}</h3>
+            </div>
+
+            <a href="{% url 'user:logout' %}" class="btn btn-outline-danger text-dark logout-btn">Logout</a> 
+        </div>
+    </div>
+    <div class="rw_sidebar">
+        <div class="header_logo">
+            {% if request.user.is_admin %}
+            <a href="{% url 'user-list' %}">
+                <img src="{% static 'images/logo.svg' %}" alt="logo">
+            </a>
+            {% else %}
+            <img src="{% static 'images/logo.svg' %}" alt="logo">
+            {% endif %}
+        </div>
+        <ul>
+            {% comment %} USERS  {% endcomment %}
+            {% if request.user.is_superuser %}
+            
+            <li><a href="{% url 'user:user-list' %}" {% if '/user' in request.path %} class="active" 
+                {% endif %} title="Users"><img src="{% static 'images/icons/group.svg' %}" alt="user">
+                <span>Users</span>
+            </a></li>
+            {% endif %}
+
+                {% comment %} POSTS  {% endcomment %}
+            <li><a href="{% url 'admin_post:list-post-admin' %}" {% if '/post' in request.path %} class="active" 
+                {% endif %} title="posts"><img src="{% static 'images/icons/dashboard.svg' %}" alt="post">
+                <span>Posts</span>
+            </a></li>
+            
+
+            {% comment %} ACTIVE BREAKS {% endcomment %}
+            {% comment %} {% if request.user.is_admin %} {% endcomment %}
+            {% comment %} <li><a href="{% url 'activebreak:activebreak-list' %}" {% if '/break' in request.path %} class="active" 
+                {% endif %} title="Active Breaks"><img src="{% static 'images/icons/time_white.svg' %}" alt="activebreak">
+                <span>Active Breaks </span>
+            </a></li>
+            {% endif %} {% endcomment %}
+        </ul>
+    </div>
+</header>

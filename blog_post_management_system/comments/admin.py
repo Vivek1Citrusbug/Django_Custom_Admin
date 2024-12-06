@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .domain.models import UserComments
+from .models import UserComments
 
 # Register your models here.
 class CommentAdmin(admin.ModelAdmin):

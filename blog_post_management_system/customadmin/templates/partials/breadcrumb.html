@@ -1,0 +1,16 @@
+{% load static %} {% block head %}
+<link rel="stylesheet" href="{% static '/css/bread_crumbs.css' %}" />
+{% endblock %}
+<section class="breadcrumb-section">
+  <nav>
+    <ol class="cd-breadcrumb custom-separator">
+      {% for breadcrumb in breadcrumbs %} {% if not forloop.last %}
+      <li class="visited">
+        <a href="{{breadcrumb.url}}">{{breadcrumb.name}}</a>
+      </li>
+      {% else %}
+      <li class="current"><p class="mb-0">{{breadcrumb.name}}</p></li>
+      {% endif %} {% endfor %}
+    </ol>
+  </nav>
+</section>

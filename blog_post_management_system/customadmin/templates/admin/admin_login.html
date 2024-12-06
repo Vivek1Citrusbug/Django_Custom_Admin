@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% load static %}
+{% comment %} {% load widget_tweaks %} {% endcomment %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Login</title>
+    <link rel="icon" href="{% static 'images/favicon.svg' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/datatables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/graphik_font.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href= "{% static 'css/login.css' %}">
+    <link rel="stylesheet" href= "{% static 'css/icons.css' %}">
+    
+    <!-- <link rel="stylesheet" href= "{% static 'css/custom.css' %}"> -->
+</head>
+<body>
+    <div class="rw_login_wrapper">
+        <div class="rw_login_inner">
+            <h1>Login</h1>
+            {% include 'includes/messages.html' %}
+        <form action="{% url 'user:admin_login' %}?next={{ next }}" method="post" novalidate>
+
+            {% csrf_token %}
+        
+            <div class="text-danger">{{form.non_field_errors }}</div>
+            <div class="rw_form_inputs">
+                <div class="rw_input">
+                    {{ form.username}}
+                    
+                    <span class="text-danger">{{form.errors.username}}</span>
+                </div>
+            </div>
+            <div class="rw_form_inputs">
+                <div class="rw_input">
+                    {{ form.password}}
+                    
+                    <span class="text-danger">{{form.errors.password}}</span>
+
+                </div>
+            </div>
+            <div class="rw_forgot_remember">
+                <div class="forgot_password">
+                    <a href="{% url 'user:forgot_password' %}" class="text-primary">forgot password?</a>
+                </div>
+            </div>
+
+            <div class="login_btns">
+                <input type="submit" id="admin_login" value="login" class="login_btn" style="border:none;" >
+            </div>
+            
+         </form>
+        </div>
+    </div>
+    
+    <!-- <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script> -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <!-- <script src="{% static 'js/jquery.dataTables.min.js' %}"></script> -->
+    <!-- <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script> -->
+    <!-- <script src="{% static 'js/custom.js' %}"></script> -->
+</html>
