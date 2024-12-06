@@ -289,10 +289,11 @@ class ForgotPassword(View):
 
             context = {
                 "username": user.username,
-                "reset_password_url": f"http://localhost:8000/customadmin/reset-password/{token_obj.token}",
+                "reset_password_url": f"http://localhost:8000/customadmin/reset-password/{token_obj.token}/",
             }
             send_forgot_password_email_custom_admin(context=context, recipient_list=[user.email])
             messages.success(request, "Email has been sent for reset password.")
+            return redirect('user:admin_login')
         else:
             messages.error(request, "User with the given email doesn't exist.")
         
@@ -300,6 +301,7 @@ class ForgotPassword(View):
 
 class ResetTokenView(View):
     def get(self, request, token):
+        print(" ######3   inside reset token view  #####3")
         token_obj = PasswordResetToken.objects.filter(token=token).first()
         if token_obj and token_obj.is_token_valid():  
             request.session["forgot_password_email"] = token_obj.user.email
