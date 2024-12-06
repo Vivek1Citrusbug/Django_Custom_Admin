@@ -148,3 +148,14 @@ MEDIA_ROOT = BASE_DIR/ 'static'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# Looking to send emails in production? Check out our Email API/SMTP product!
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_BACKEND ="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = 'a5634ec7138a39'
+EMAIL_HOST_PASSWORD = '63bbdfc9cce507'
+EMAIL_PORT = '2525'
+
+

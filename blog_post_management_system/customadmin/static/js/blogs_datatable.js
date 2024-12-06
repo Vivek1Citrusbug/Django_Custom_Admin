@@ -3,25 +3,25 @@ $(document).ready(function () {
       paging: true,
       responsive: true,
       pageLength: 10,
-      autoWidth: true,
+      autoWidth: false,
       lengthMenu: [10, 25, 50, 100],
       searching: true,
       processing: true,
       serverSide: true,
       ajax: {
-        // context: this,
         url: window.datatable_url,
         type: "get",
       },
       columns: [
-        { data: "id", name: "id", },
-        { data: "title", name: "title" },
-        { data: "content", name: "content" },
-        { data: "date_published", name: "date_published" },
-        { data: "author_id", name: "author_id" },
-        { data: "action", name: "action" },
+        { data: "id", name: "id", orderable:true },
+        { data: "title", name: "title", orderable:true },
+        { data: "content", name: "content", orderable:true },
+        { data: "date_published", name: "date_published", orderable:true },
+        { data: "author_id", name: "author_id", orderable:true },
+        { data: "action", name: "action", orderable:true },
       ],
-      
+      columnDefs: [{ orderable: true, targets: [0,1] }],
+      order: [[3, "desc"]],
       oLanguage: {
         sSearch: "",
         oPaginate: {
@@ -34,6 +34,7 @@ $(document).ready(function () {
 
     table.columns([0, 2]).visible(false);
     table.order([3, 'desc']).draw();
+   
 
     table.on("click", "tbody tr", function () {
     location.href = `/customadmin/posts/${table.row(this).data().id}`
