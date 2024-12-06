@@ -1,4 +1,5 @@
 from django.utils import timezone
+
 # from datetime import timezone
 import re
 from typing import Dict
@@ -38,6 +39,7 @@ from accounts.models import PasswordResetToken
 from django.conf import settings
 import re
 from customadmin.forms.users import PASSWORD_REGEX
+
 
 class MyLoginView(LoginView):
     template_name = "admin/admin_login.html"
@@ -266,8 +268,6 @@ class UserProfileView(MyUpdateView):
         return context
 
 
-################### Password Section ##################
-
 class ForgotPassword(View):
     def get(self, request):
         return render(request, "admin/forgot_password.html")
@@ -291,26 +291,28 @@ class ForgotPassword(View):
                 "username": user.username,
                 "reset_password_url": f"http://localhost:8000/customadmin/reset-password/{token_obj.token}/",
             }
-            send_forgot_password_email_custom_admin(context=context, recipient_list=[user.email])
+            send_forgot_password_email_custom_admin(
+                context=context, recipient_list=[user.email]
+            )
             messages.success(request, "Email has been sent for reset password.")
-            return redirect('user:admin_login')
+            return redirect("user:admin_login")
         else:
             messages.error(request, "User with the given email doesn't exist.")
-        
+
         return render(request, "admin/forgot_password.html")
+
 
 class ResetTokenView(View):
     def get(self, request, token):
-        print(" ######3   inside reset token view  #####3")
         token_obj = PasswordResetToken.objects.filter(token=token).first()
-        if token_obj and token_obj.is_token_valid():  
+        if token_obj and token_obj.is_token_valid():
             request.session["forgot_password_email"] = token_obj.user.email
             return render(request, "admin/change_password.html")
         elif token_obj and not token_obj.is_token_valid():
             return HttpResponse("Token Expired")
         else:
             return HttpResponse("Invalid Token")
-        
+
 
 class ChangePasswordView(View):
     def get(self, request):
@@ -352,4 +354,3 @@ class ChangePasswordView(View):
                 request, "New password and confirm new password did not match"
             )
             return render(request, "admin/change_password.html")
-
