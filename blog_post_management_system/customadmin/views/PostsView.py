@@ -90,8 +90,6 @@ class BlogListAjaxView(View, HasPermissionsMixin):
         for post in qs:
             print(post)
             current_user = User.objects.get(id=post.author_id)
-            print("Current user : ############",current_user,post.author_id)
-            
             data.append(
                 {
                    "id": post.id,
@@ -124,7 +122,7 @@ class BlogListAjaxView(View, HasPermissionsMixin):
         filtered_records = queryset.count()
         queryset = queryset[start:start + length]
         data = self.prepare_results(queryset)
-
+        
         context_data["data"] = data
         context_data["draw"] = draw
         context_data["recordsTotal"] = total_records
@@ -177,6 +175,7 @@ class BlogDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(context)
         blog_post = self.get_object()
         likes = Like.objects.filter(post_id=blog_post).count()
 

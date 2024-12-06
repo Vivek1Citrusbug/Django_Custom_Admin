@@ -18,34 +18,11 @@
     <!-- <link rel="stylesheet" href= "{% static 'css/custom.css' %}"> -->
 </head>
 <body>
-    <div class="rw_login_wrapper">
-        <div class="rw_login_inner forget_page">
-            <h1>Forgot Password</h1>
-        <form action="{% url 'user:forgot_password' %}" method="post" >
-
-            {% csrf_token %}
-            {% include 'includes/messages.html' %}
-        
-            <div class="rw_form_inputs">
-                <div class="rw_input">
-                    <input type="text" placeholder="Enter Your Registed Email" required value="" name="email">
-                </div>
-            </div>
-
-            <div class="rw_forgot_remember">
-                <div class="forgot_password">
-                        <a href="javascript:;">forgot password?</a>
-                </div>
-            </div>
-
-
-
-            <div class="login_btns">
-                <input type="submit" id="admin_login" value="Verify" class="login_btn" style="border:none;" >
-            </div>
-         </form>
-        </div>
-    </div>
+   
+        <h2>Hello {{ username }}</h2>
+        <p>Click the link below to reset your password:</p>
+        <a href="{{ reset_password_url }}">Reset Password</a>
+   
     
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
